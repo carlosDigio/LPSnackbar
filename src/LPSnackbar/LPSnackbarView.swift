@@ -37,6 +37,7 @@ internal let snackRemoval: Notification.Name = Notification.Name(rawValue: "com.
  
  - seperator: A small view which adds an accent that seperates the `titleLabel` and the `button`.
  */
+@objcMembers
 open class LPSnackbarView: UIView {
     
     // MARK: Properties
@@ -45,14 +46,14 @@ open class LPSnackbarView: UIView {
     internal var controller: LPSnackbar?
     
     /// The amount of padding from the left handside, used to layout the `titleLabel`, default is `8.0`
-    open var leftPadding: CGFloat = 8.0 {
+    @objc open var leftPadding: CGFloat = 8.0 {
         didSet {
             self.setNeedsLayout()
         }
     }
     
     /// The amount of padding from the right handside, used to layout the `button`, default is `8.0`
-    open var rightPadding: CGFloat = 8.0 {
+    @objc open var rightPadding: CGFloat = 8.0 {
         didSet {
             self.setNeedsLayout()
         }
@@ -66,7 +67,7 @@ open class LPSnackbarView: UIView {
      This should only be a value between `0.0` and `1.0`. If this value is set past this range, the value
      will be reset to the default value of `0.65`.
      */
-    open var seperatorHeightPercent: CGFloat = 0.65 {
+    @objc open var seperatorHeightPercent: CGFloat = 0.65 {
         didSet {
             // Clamp the percent between the correct range
             if seperatorHeightPercent < 0.0 || seperatorHeightPercent > 1.0 {
@@ -77,14 +78,14 @@ open class LPSnackbarView: UIView {
     }
     
     /// The width for the seperator, default is `1.5`
-    open var seperatorWidth: CGFloat = 1.5 {
+    @objc open var seperatorWidth: CGFloat = 1.5 {
         didSet {
             self.setNeedsLayout()
         }
     }
     
     /// The amount of padding from the right side of the seperator (next to the button), default is `20.0`
-    open var seperatorPadding: CGFloat = 20.0 {
+    @objc open var seperatorPadding: CGFloat = 20.0 {
         didSet {
             self.setNeedsLayout()
         }
@@ -183,7 +184,7 @@ open class LPSnackbarView: UIView {
     // MARK: Subviews
     
     /// The label on the left hand side of the view used to display text.
-    open lazy var titleLabel: UILabel = {
+    @objc open lazy var titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
@@ -192,7 +193,7 @@ open class LPSnackbarView: UIView {
     }()
     
     /// The button on the right hand side of the view which allows an action to be performed.
-    open lazy var button: UIButton = {
+    @objc open lazy var button: UIButton = {
         let button = UIButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor(red: 0.702, green: 0.867, blue: 0.969, alpha: 1.00), for: .normal)
@@ -201,7 +202,7 @@ open class LPSnackbarView: UIView {
     }()
     
     /// A small view which adds an accent that seperates the `titleLabel` and the `button`.
-    open lazy var seperator: UIView = {
+    @objc open lazy var seperator: UIView = {
         let seperator = UIView(frame: .zero)
         seperator.isAccessibilityElement = false
         seperator.backgroundColor = UIColor(red: 0.366, green: 0.364, blue: 0.368, alpha: 1.00)

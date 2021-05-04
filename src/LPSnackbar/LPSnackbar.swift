@@ -31,12 +31,13 @@ import UIKit
  This class handles everything that has to do with showing, dismissing and performing actions in a `LPSnackbarView`.
  There are several static helper methods, which allow presenting a basic snack without needing instantiate an `LPSnackbar` yourself.
  */
+@objcMembers
 open class LPSnackbar: Equatable {
 
     // MARK: Public Members
 
     /// The `LPSnackbarView` for the controller, access this view and it's subviews to do any additional customization.
-    open lazy var view: LPSnackbarView = {
+    @objc open lazy var view: LPSnackbarView = {
         let snackView = LPSnackbarView(frame: .zero)
         snackView.controller = self
         snackView.isHidden = true
@@ -51,7 +52,7 @@ open class LPSnackbar: Equatable {
      This should only be a value between `0.0` and `1.0`. If this value is set past this range, the value
      will be reset to the default value of `0.98`.
      */
-    open var widthPercent: CGFloat = 0.98 {
+    @objc open var widthPercent: CGFloat = 0.98 {
         didSet {
             // Clamp at between the range
             if self.widthPercent < 0.0 || self.widthPercent > 1.0 {
@@ -70,7 +71,7 @@ open class LPSnackbar: Equatable {
      Setting the frame for `view` can have unexpected results as the frame is calculated in a different way depending
      on many variables.
      */
-    open var height: CGFloat = 40.0 {
+    @objc open var height: CGFloat = 40.0 {
         didSet {
             // Update height
             self.view.setNeedsLayout()
@@ -84,7 +85,7 @@ open class LPSnackbar: Equatable {
      bottom spacing of `12.0`, however, if you have a `UITabBarController` you may want to increase the bottom spacing
      so that the snack is presented above the bar.
      */
-    open var bottomSpacing: CGFloat = 12.0 {
+    @objc open var bottomSpacing: CGFloat = 12.0 {
         didSet {
             // Update frame
             self.view.setNeedsLayout()
@@ -92,7 +93,7 @@ open class LPSnackbar: Equatable {
     }
 
     /// Similar to the `bottomSpacing` property, except this is only used when multiple `LPSnackbarViews` are stacked.
-    open var stackedBottomSpacing: CGFloat = 8.0 {
+    @objc open var stackedBottomSpacing: CGFloat = 8.0 {
         didSet {
             // Update any layouts
             self.view.setNeedsLayout()
@@ -104,13 +105,13 @@ open class LPSnackbar: Equatable {
 
      Only used in iOS 11.0 +
      */
-    open var adjustsPositionForSafeArea: Bool = true
+    @objc open var adjustsPositionForSafeArea: Bool = true
 
     /// Optional view to display the `view` in, by default this is `nil`, thus the main `UIWindow` is used for presentation.
-    open var viewToDisplayIn: UIView?
+    @objc open var viewToDisplayIn: UIView?
 
     /// The duration for the animation of both the adding and removal of the `view`.
-    open var animationDuration: TimeInterval = 0.5
+    @objc open var animationDuration: TimeInterval = 0.5
 
     /// The completion block for an `LPSnackbar`, `true` is sent if button was tapped, `false` otherwise.
     public typealias SnackbarCompletion = (Bool) -> Void
@@ -118,13 +119,13 @@ open class LPSnackbar: Equatable {
     // MARK: Private Members
 
     /// The timer responsible for notifying about when the view needs to be removed.
-    private var displayTimer: Timer?
+    @objc private var displayTimer: Timer?
 
     /// Whether or not the view was initially animated, this is used when animating out the view.
-    private var wasAnimated: Bool = false
+    @objc private var wasAnimated: Bool = false
 
     /// The completion block which is assigned when calling `show(animated:completion:)`
-    private var completion: SnackbarCompletion?
+    @objc private var completion: SnackbarCompletion?
 
     // MARK: Initializers
 
@@ -136,7 +137,7 @@ open class LPSnackbar: Equatable {
      If `buttonTitle` is `nil`, no button will be displayed.
 
      */
-    public init (title: String, buttonTitle: String?) {
+    @objc public init (title: String, buttonTitle: String?) {
         // Set labels/buttons
         view.titleLabel.text = title
 
@@ -159,7 +160,7 @@ open class LPSnackbar: Equatable {
      If `attributedButtonTitle` is `nil`, no button will be displayed.
 
      */
-    public init(attributedTitle: NSAttributedString, attributedButtonTitle: NSAttributedString?) {
+    @objc public init(attributedTitle: NSAttributedString, attributedButtonTitle: NSAttributedString?) {
         // Set labels/buttons
         view.titleLabel.attributedText = attributedTitle
 
@@ -388,7 +389,7 @@ open class LPSnackbar: Equatable {
      - animated: Whether or not the snack should animate in and out. Default = `true`
      - completion: The completion handler for when the snack is removed/button pressed. Default = `nil`
      */
-    open func show(displayDuration: TimeInterval? = 5.0, animated: Bool = true, completion: SnackbarCompletion? = nil) {
+    @objc open func show(displayDuration: TimeInterval, animated: Bool = true, completion: SnackbarCompletion? = nil) {
         guard let superview = viewToDisplayIn ?? UIApplication.shared.keyWindow ?? nil else {
             fatalError("Unable to get a superview, was not able to show\n Couldn't add LPSnackbarView as a subview to the main UIWindow")
         }
@@ -400,8 +401,8 @@ open class LPSnackbar: Equatable {
         self.completion = completion
 
         // Setup timer
-        if let duration = displayDuration {
-            displayTimer = Timer.scheduledTimer(timeInterval: duration, target: self,
+        if  displayDuration > 0.0 {
+            displayTimer = Timer.scheduledTimer(timeInterval: displayDuration, target: self,
                                                 selector: #selector(self.timerDidFinish),
                                                 userInfo: nil, repeats: false)
         }
@@ -421,7 +422,7 @@ open class LPSnackbar: Equatable {
      - `completeWithAction`: Whether or not if when dismissing, you want to pass true to the `SnackbarCompletion`, which
      means that it will act as if the button was pressed by the user.
      */
-    open func dismiss(animated: Bool = true, completeWithAction: Bool = false) {
+    @objc open func dismiss(animated: Bool = true, completeWithAction: Bool = false) {
         guard !completeWithAction else {
             self.viewButtonTapped()
             return
@@ -442,7 +443,7 @@ open class LPSnackbar: Equatable {
     // MARK: Static Methods
 
     /// Allows showing a simple snack without needing to instantiate any `LPSnackbar`
-    public static func showSnack(title: String, displayDuration: TimeInterval? = 5.0, completion: SnackbarCompletion? = nil) {
+    @objc public static func showSnack(title: String, displayDuration: TimeInterval, completion: SnackbarCompletion? = nil) {
         let snack = LPSnackbar(title: title, buttonTitle: nil)
         snack.show(displayDuration: displayDuration) { _ in
             completion?(false)
@@ -450,7 +451,7 @@ open class LPSnackbar: Equatable {
     }
 
     /// Allows showing a simple, more customizable, snack without needing to instantiate any `LPSnackbar`
-    public static func showSnack(attributedTitle: NSAttributedString, displayDuration: TimeInterval? = 5.0, completion: SnackbarCompletion? = nil) {
+    @objc public static func showSnack(attributedTitle: NSAttributedString, displayDuration: TimeInterval, completion: SnackbarCompletion? = nil) {
         let snack = LPSnackbar(attributedTitle: attributedTitle, attributedButtonTitle: nil)
         snack.show(displayDuration: displayDuration) { _ in
             completion?(false)
