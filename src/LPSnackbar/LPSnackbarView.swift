@@ -26,7 +26,7 @@
 import UIKit
 
 /// The `Notification.Name` for when a `LPSnackbarView` has been removed from it's superview.
-internal let snackRemoval: Notification.Name = Notification.Name(rawValue: "com.luispadron.LPSnackbar.removalNotification")
+internal let snackRemoval: Notification.Name = Notification.Name(rawValue: "com.ivoox.LPSnackbar.removalNotification")
 
 /**
  The `LPSnackbarView` which contains 3 subviews.

@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
   s.author             = { "Luis Padron" => "luispadronn@gmail.com" }
   s.social_media_url   = "http://luispadron.com"
 
-  s.platform     = :ios, "12.0"
+  s.platform     = :ios, "11.0"
 
   s.source       = { :git => "https://github.com/luispadron/LPSnackbar.git", :tag => "v#{s.version}" }
 
