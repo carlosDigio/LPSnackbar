@@ -32,8 +32,7 @@ import UIKit
  There are several static helper methods, which allow presenting a basic snack without needing instantiate an `LPSnackbar` yourself.
  */
 @objcMembers
-open class LPSnackbar: Equatable {
-
+open class LPSnackbar: NSObject {
     // MARK: Public Members
 
     /// The `LPSnackbarView` for the controller, access this view and it's subviews to do any additional customization.
@@ -137,7 +136,9 @@ open class LPSnackbar: Equatable {
      If `buttonTitle` is `nil`, no button will be displayed.
 
      */
-    @objc public init (title: String, buttonTitle: String?) {
+    @objc(initWithTitle:buttonTitle:)
+    public init (title: String, buttonTitle: String?) {
+        super.init()
         // Set labels/buttons
         view.titleLabel.text = title
 
@@ -160,7 +161,10 @@ open class LPSnackbar: Equatable {
      If `attributedButtonTitle` is `nil`, no button will be displayed.
 
      */
-    @objc public init(attributedTitle: NSAttributedString, attributedButtonTitle: NSAttributedString?) {
+    @objc(initWithAttributedTitle:attributedButtonTitle:)
+    public init(attributedTitle: NSAttributedString, attributedButtonTitle: NSAttributedString?) {
+        super.init()
+        
         // Set labels/buttons
         view.titleLabel.attributedText = attributedTitle
 
