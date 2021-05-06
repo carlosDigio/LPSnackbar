@@ -25,31 +25,12 @@
 
 import UIKit
 
-internal class LPSnackbarItem: NSObject {
-    var snackBar: LPSnackbar
-    var displayDuration: TimeInterval
-    var animated: Bool
-    var completion: LPSnackbar.SnackbarCompletion?
-    
-    init(snackBar: LPSnackbar,
-         displayDuration: TimeInterval = 3.0,
-         animated: Bool = true,
-         completion: LPSnackbar.SnackbarCompletion? = nil) {
-        self.snackBar = snackBar
-        self.displayDuration = displayDuration
-        self.animated = animated
-        self.completion = completion
-    }
-    
-    func showSnackBar() {
-        snackBar.show(displayDuration: displayDuration, animated: animated, completion: completion)
-    }
-    
-    func checkSnackbar(_ snackbar: LPSnackbar) -> Bool {
-        snackbar == snackBar
-    }
-}
-
+/**
+ The controller for an `LPSnackbarView`.
+ 
+ This class handles everything that has to do with showing, dismissing and performing actions in a `LPSnackbarView`.
+ There are several static helper methods, which allow presenting a basic snack without needing instantiate an `LPSnackbar` yourself.
+ */
 @objc
 open class LPSnackbarManager: NSObject {
     @objc public static let shared: LPSnackbarManager = LPSnackbarManager(maxSnacks: 3)

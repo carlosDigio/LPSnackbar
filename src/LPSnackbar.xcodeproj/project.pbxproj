@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		78398A932643C4AD003399EE /* LPSnackbarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78398A922643C4AD003399EE /* LPSnackbarManager.swift */; };
+		78398A952643C4E7003399EE /* LPSnackbarItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78398A942643C4E7003399EE /* LPSnackbarItem.swift */; };
 		A0B625AC1F18162B00814C2E /* LPSnackbar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0B625A21F18162B00814C2E /* LPSnackbar.framework */; };
 		A0B625B11F18162B00814C2E /* LPSnackbarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0B625B01F18162B00814C2E /* LPSnackbarTests.swift */; };
 		A0B625B31F18162B00814C2E /* LPSnackbar.h in Headers */ = {isa = PBXBuildFile; fileRef = A0B625A51F18162B00814C2E /* LPSnackbar.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -25,6 +27,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		78398A922643C4AD003399EE /* LPSnackbarManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LPSnackbarManager.swift; sourceTree = "<group>"; };
+		78398A942643C4E7003399EE /* LPSnackbarItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LPSnackbarItem.swift; sourceTree = "<group>"; };
 		A0B625A21F18162B00814C2E /* LPSnackbar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LPSnackbar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A0B625A51F18162B00814C2E /* LPSnackbar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPSnackbar.h; sourceTree = "<group>"; };
 		A0B625A61F18162B00814C2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -75,7 +79,9 @@
 		A0B625A41F18162B00814C2E /* LPSnackbar */ = {
 			isa = PBXGroup;
 			children = (
+				78398A922643C4AD003399EE /* LPSnackbarManager.swift */,
 				A0B625BD1F18165C00814C2E /* LPSnackbar.swift */,
+				78398A942643C4E7003399EE /* LPSnackbarItem.swift */,
 				A0B625BF1F18166A00814C2E /* LPSnackbarView.swift */,
 				A0B625A51F18162B00814C2E /* LPSnackbar.h */,
 				A0B625A61F18162B00814C2E /* Info.plist */,
@@ -149,7 +155,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0900;
-				LastUpgradeCheck = 1230;
+				LastUpgradeCheck = 1250;
 				ORGANIZATIONNAME = "Luis Padron";
 				TargetAttributes = {
 					A0B625A11F18162B00814C2E = {
@@ -203,8 +209,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				78398A932643C4AD003399EE /* LPSnackbarManager.swift in Sources */,
 				A0B625BE1F18165C00814C2E /* LPSnackbar.swift in Sources */,
 				A0B625C01F18166A00814C2E /* LPSnackbarView.swift in Sources */,
+				78398A952643C4E7003399EE /* LPSnackbarItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

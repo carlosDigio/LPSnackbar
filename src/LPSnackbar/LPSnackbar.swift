@@ -323,7 +323,7 @@ open class LPSnackbar: NSObject {
             options: .curveEaseInOut,
             animations: {
                 // Animate the view to the correct position & opacity
-                self.view.layer.opacity = self.view.defaultOpacity ?? 0.98
+                self.view.layer.opacity = self.view.defaultOpacity
                 self.view.frame = CGRect(x: frame.origin.x, y: inY, width: frame.width, height: frame.height)
         },
             completion: nil
