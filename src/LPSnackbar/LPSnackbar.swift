@@ -70,7 +70,7 @@ open class LPSnackbar: NSObject {
      Setting the frame for `view` can have unexpected results as the frame is calculated in a different way depending
      on many variables.
      */
-    @objc open var height: CGFloat = 40.0 {
+    @objc open var height: CGFloat = 50.0 {
         didSet {
             // Update height
             self.view.setNeedsLayout()
@@ -107,25 +107,32 @@ open class LPSnackbar: NSObject {
     @objc open var adjustsPositionForSafeArea: Bool = true
 
     /// Optional view to display the `view` in, by default this is `nil`, thus the main `UIWindow` is used for presentation.
-    @objc open var viewToDisplayIn: UIView?
+    @objc open weak var viewToDisplayIn: UIView?
 
     /// The duration for the animation of both the adding and removal of the `view`.
     @objc open var animationDuration: TimeInterval = 0.5
-
+    
+    /// Whether or not the snackbar has been showed.
+    @objc open var wasShowed: Bool = false
+    @objc open var willBePresented: Bool = false
+    
     /// The completion block for an `LPSnackbar`, `true` is sent if button was tapped, `false` otherwise.
     public typealias SnackbarCompletion = (Bool) -> Void
 
     // MARK: Private Members
 
     /// The timer responsible for notifying about when the view needs to be removed.
-    @objc private var displayTimer: Timer?
+    private var displayTimer: Timer?
 
     /// Whether or not the view was initially animated, this is used when animating out the view.
-    @objc private var wasAnimated: Bool = false
+    private var wasAnimated: Bool = false
+    
+    /// Whether or not the snackbar will be show at front or under the view to display in
+    private var showUnderViewToDisplayIn: Bool = false
 
     /// The completion block which is assigned when calling `show(animated:completion:)`
-    @objc private var completion: SnackbarCompletion?
-
+    private var completion: SnackbarCompletion?
+    
     // MARK: Initializers
 
     /**
@@ -139,45 +146,92 @@ open class LPSnackbar: NSObject {
     @objc(initWithTitle:buttonTitle:)
     public init (title: String, buttonTitle: String?) {
         super.init()
-        // Set labels/buttons
-        view.titleLabel.text = title
-
-        if let bTitle = buttonTitle {
-            view.button.setTitle(bTitle, for: .normal)
-        } else {
-            // Remove button
-            view.button.removeFromSuperview()
-        }
-
-        // Finish initialization
-        finishInit()
-    }
-
-    /**
-     Creates an `LPSnackbar`.
-
-     ## Important
-
-     If `attributedButtonTitle` is `nil`, no button will be displayed.
-
-     */
-    @objc(initWithAttributedTitle:attributedButtonTitle:)
-    public init(attributedTitle: NSAttributedString, attributedButtonTitle: NSAttributedString?) {
-        super.init()
+        
+        let snackView = LPSnackbarView(frame: .zero)
+        snackView.controller = self
+        snackView.isHidden = true
+        
+        let targetSize = CGSize(width: snackView.bounds.width, height: UIView.layoutFittingCompressedSize.height)
+        height = snackView.systemLayoutSizeFitting(targetSize).height
         
         // Set labels/buttons
-        view.titleLabel.attributedText = attributedTitle
+        snackView.titleLabel.text = title
 
-        if let bTitle = attributedButtonTitle {
-            view.button.setAttributedTitle(bTitle, for: .normal)
+        if let bTitle = buttonTitle {
+            snackView.button.setTitle(bTitle, for: .normal)
         } else {
-            // Remove button
-            view.button.removeFromSuperview()
+            snackView.button.removeFromSuperview()
         }
 
         // Finish initialization
         finishInit()
     }
+    
+    // MARK: Public Methods
+    
+    /**
+     Presents the snackView to the screen
+     - Parameters:
+     - displayDuration: How long to show the snack for, if `nil`, will show forever. Default = `3.0`
+     - animated: Whether or not the snack should animate in and out. Default = `true`
+     - completion: The completion handler for when the snack is removed/button pressed. Default = `nil`
+     */
+    @objc open func show(displayDuration: TimeInterval = 3.0, animated: Bool = true, completion: SnackbarCompletion? = nil) {
+        guard let superview = viewToDisplayIn ?? UIApplication.shared.keyWindow ?? nil else {
+            fatalError("Unable to get a superview, was not able to show\n Couldn't add LPSnackbarView as a subview to the main UIWindow")
+        }
+        
+        // Add as subview
+        superview.addSubview(view)
+        
+        if showUnderViewToDisplayIn {
+            superview.sendSubviewToBack(view)
+        }
+        
+        // Set completion and animate the view if allowed
+        self.completion = completion
+        
+        // Setup timer
+        if  displayDuration > 0.0 {
+            displayTimer = Timer.scheduledTimer(timeInterval: displayDuration, target: self,
+                                                selector: #selector(self.timerDidFinish),
+                                                userInfo: nil, repeats: false)
+        }
+        
+        if animated {
+            animateIn()
+        } else {
+            view.isHidden = false
+        }
+    }
+    
+    /**
+     Allows you to manually dismiss the snack from the screen.
+     
+     - `animated`: Whether or not to animate the view out.
+     
+     - `completeWithAction`: Whether or not if when dismissing, you want to pass true to the `SnackbarCompletion`, which
+     means that it will act as if the button was pressed by the user.
+     */
+    @objc open func dismiss(animated: Bool = true, completeWithAction: Bool = false) {
+        guard !completeWithAction else {
+            self.viewButtonTapped()
+            return
+        }
+        
+        // Invalidate timer
+        displayTimer?.invalidate()
+        displayTimer = nil
+        
+        if animated {
+            self.animateOut()
+        } else {
+            // remove the snack
+            self.removeSnack()
+        }
+    }
+    
+    // MARK: Private Methods
 
     /// Helper method which creates the timer (if needed) and adds the swipe gestures to the view
     private func finishInit() {
@@ -195,23 +249,32 @@ open class LPSnackbar: NSObject {
         // Register for snack removal notifications
         NotificationCenter.default.addObserver(self, selector: #selector(self.snackWasRemoved(notification:)),
                                                name: snackRemoval, object: nil)
+        
+        willBePresented = true
     }
 
-
+    /// Removes the snack view from the super view and invalidates any timers.
+    private func removeSnack() {
+        view.removeFromSuperview()
+        displayTimer?.invalidate()
+        displayTimer = nil
+        wasShowed = true
+    }
+    
     // MARK: Helper Methods
-
+    
     /// Returns the calculated/appropriate frame for the view, takes into account whether there are multiple snacks on the view.
     internal func frameForView() -> CGRect {
         guard let superview = viewToDisplayIn ?? UIApplication.shared.keyWindow ?? nil else {
             return .zero
         }
-
+        
         // Set frame for view
         let width: CGFloat = superview.bounds.width * widthPercent
         let startX: CGFloat = (superview.bounds.width - width) / 2.0
-
+        
         let startY: CGFloat
-
+        
         // Check to see if a snackbar is already being presented in this view
         var snackView: LPSnackbarView?
         for sub in superview.subviews {
@@ -221,7 +284,7 @@ open class LPSnackbar: NSObject {
                 snackView = snack
             }
         }
-
+        
         // For iOS 11.0 + we can get the safe area of the view, if allowed, we can inset the snack by this amount in
         // addition to the rest of the insets the user has decided they want
         let safeAreaInset: CGFloat
@@ -230,21 +293,14 @@ open class LPSnackbar: NSObject {
         } else {
             safeAreaInset = 0
         }
-
+        
         if let snack = snackView {
             startY = snack.frame.maxY - snack.frame.height - height - stackedBottomSpacing
         } else {
             startY = superview.bounds.maxY - height - bottomSpacing - safeAreaInset
         }
-
+        
         return CGRect(x: startX, y: startY, width: width, height: height)
-    }
-
-    /// Removes the snack view from the super view and invalidates any timers.
-    private func removeSnack() {
-        view.removeFromSuperview()
-        displayTimer?.invalidate()
-        displayTimer = nil
     }
 
     // MARK: Animation
@@ -267,7 +323,7 @@ open class LPSnackbar: NSObject {
             options: .curveEaseInOut,
             animations: {
                 // Animate the view to the correct position & opacity
-                self.view.layer.opacity = self.view.defaultOpacity
+                self.view.layer.opacity = self.view.defaultOpacity ?? 0.98
                 self.view.frame = CGRect(x: frame.origin.x, y: inY, width: frame.width, height: frame.height)
         },
             completion: nil
@@ -364,7 +420,9 @@ open class LPSnackbar: NSObject {
             animations: {
                 // Update the frame
                 self.view.frame = self.frameForView()
-        }, completion: nil)
+            }) { [weak self] success in
+            self?.wasShowed = true
+        }
     }
 
     /// Handles left, right, and bottom swipes on the view by animating them out
@@ -384,84 +442,6 @@ open class LPSnackbar: NSObject {
         }
     }
 
-    // MARK: Public Methods
-
-    /**
-     Presents the snack to the screen
-     - Parameters:
-     - displayDuration: How long to show the snack for, if `nil`, will show forever. Default = `5.0`
-     - animated: Whether or not the snack should animate in and out. Default = `true`
-     - completion: The completion handler for when the snack is removed/button pressed. Default = `nil`
-     */
-    @objc open func show(displayDuration: TimeInterval, animated: Bool = true, completion: SnackbarCompletion? = nil) {
-        guard let superview = viewToDisplayIn ?? UIApplication.shared.keyWindow ?? nil else {
-            fatalError("Unable to get a superview, was not able to show\n Couldn't add LPSnackbarView as a subview to the main UIWindow")
-        }
-
-        // Add as subview
-        superview.addSubview(self.view)
-
-        // Set completion and animate the view if allowed
-        self.completion = completion
-
-        // Setup timer
-        if  displayDuration > 0.0 {
-            displayTimer = Timer.scheduledTimer(timeInterval: displayDuration, target: self,
-                                                selector: #selector(self.timerDidFinish),
-                                                userInfo: nil, repeats: false)
-        }
-
-        if animated {
-            animateIn()
-        } else {
-            view.isHidden = false
-        }
-    }
-
-    /**
-     Allows you to manually dismiss the snack from the screen.
-
-     - `animated`: Whether or not to animate the view out.
-
-     - `completeWithAction`: Whether or not if when dismissing, you want to pass true to the `SnackbarCompletion`, which
-     means that it will act as if the button was pressed by the user.
-     */
-    @objc open func dismiss(animated: Bool = true, completeWithAction: Bool = false) {
-        guard !completeWithAction else {
-            self.viewButtonTapped()
-            return
-        }
-
-        // Invalidate timer
-        displayTimer?.invalidate()
-        displayTimer = nil
-
-        if animated {
-            self.animateOut()
-        } else {
-            // remove the snack
-            self.removeSnack()
-        }
-    }
-
-    // MARK: Static Methods
-
-    /// Allows showing a simple snack without needing to instantiate any `LPSnackbar`
-    @objc public static func showSnack(title: String, displayDuration: TimeInterval, completion: SnackbarCompletion? = nil) {
-        let snack = LPSnackbar(title: title, buttonTitle: nil)
-        snack.show(displayDuration: displayDuration) { _ in
-            completion?(false)
-        }
-    }
-
-    /// Allows showing a simple, more customizable, snack without needing to instantiate any `LPSnackbar`
-    @objc public static func showSnack(attributedTitle: NSAttributedString, displayDuration: TimeInterval, completion: SnackbarCompletion? = nil) {
-        let snack = LPSnackbar(attributedTitle: attributedTitle, attributedButtonTitle: nil)
-        snack.show(displayDuration: displayDuration) { _ in
-            completion?(false)
-        }
-    }
-
     // MARK: Equatable
 
     /// Returns equals if and only if `lhs` and `rhs` are the same object.
@@ -473,10 +453,14 @@ open class LPSnackbar: NSObject {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
+        
         displayTimer?.invalidate()
         displayTimer = nil
+        
         view.controller = nil
         view.removeFromSuperview()
+        
+        wasShowed = true
     }
 }
 
