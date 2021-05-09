@@ -91,6 +91,6 @@ open class LPSnackbarManager: NSObject {
     
     private func presentNextSnack() {
         if snacks.filter({ $0.isDisplayed }).count >= maxSnacks { return }
-        snacks.filter({ !$0.isDisplayed }).prefix(maxSnacks).map({ $0.showSnackBar() })
+        snacks.filter({ !$0.isDisplayed }).prefix(maxSnacks).forEach({ $0.showSnackBar() })
     }
 }

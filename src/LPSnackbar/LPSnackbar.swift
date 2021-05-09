@@ -220,8 +220,11 @@ open class LPSnackbar: NSObject {
     /// Helper method which creates the timer (if needed) and adds the swipe gestures to the view
     private func finishInit() {
         isAccessibilityElement = true
-        accessibilityElements = [view.titleLabel, view.rightButton]
-        accessibilityLabel = view.titleLabel?.text
+        
+        if let label = view.titleLabel, let button = view.rightButton {
+            accessibilityElements = [label, button]
+            accessibilityLabel = label.text
+        }
         
         // Add gesture recognizers for swipes
         let left = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipes(sender:)))
@@ -268,7 +271,7 @@ open class LPSnackbar: NSObject {
                 if let snack = sub as? LPSnackbarView, snack === view {
                     break
                 }
-            } else if let snack = sub as? LPSnackbarView {
+            } else if sub is LPSnackbarView {
                 view.layer.zPosition = CGFloat(1000 - (index + 1))
             }
             // Loop until we find the last snack view, since it should be the last one displayed in the superview

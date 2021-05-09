@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "LPSnackbar"
-  s.version      = "4.0.0"
+  s.version      = "4.0.2"
   s.swift_version = "5.3"
   s.summary      = "A flexible and easy to use Snackbar control for iOS."
 
@@ -22,5 +22,5 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/luispadron/LPSnackbar.git", :tag => "v#{s.version}" }
 
-  s.source_files  = "src/LPSnackbar", "src/LPSnackbar/**/*.{h,m}"
+  s.source_files  = "src/LPSnackbar", "src/LPSnackbar/**/*.{h,m,xib}"
 end
