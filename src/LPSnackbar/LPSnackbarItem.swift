@@ -1,5 +1,5 @@
 //
-//  LPSnackbarManager.swift
+//  LPSnackbarItem.swift
 //  LPSnackbar
 //
 //  Copyright (c) 2021
@@ -30,10 +30,11 @@ open class LPSnackbarItem: NSObject {
     var snackBar: LPSnackbar
     var displayDuration: TimeInterval
     var animated: Bool
+    var isDisplayed: Bool = false
     var completion: LPSnackbar.SnackbarCompletion?
     
     init(snackBar: LPSnackbar,
-         displayDuration: TimeInterval = 3.0,
+         displayDuration: TimeInterval = 2.0,
          animated: Bool = true,
          completion: LPSnackbar.SnackbarCompletion? = nil) {
         self.snackBar = snackBar
@@ -43,10 +44,11 @@ open class LPSnackbarItem: NSObject {
     }
     
     func showSnackBar() {
+        isDisplayed = true
         snackBar.show(displayDuration: displayDuration, animated: animated, completion: completion)
     }
     
-    func checkSnackbar(_ snackbar: LPSnackbar) -> Bool {
-        snackbar == snackBar
+    func checkSnackbarView(_ snackbarView: LPSnackbarView) -> Bool {
+        snackbarView === snackBar.view
     }
 }

@@ -26,29 +26,20 @@
 import UIKit
 
 /**
- The controller for an `LPSnackbarView`.
+ The manager for an `LPSnackbar`.
  
- This class handles everything that has to do with showing, dismissing and performing actions in a `LPSnackbarView`.
- There are several static helper methods, which allow presenting a basic snack without needing instantiate an `LPSnackbar` yourself.
+ This class handles everything that has to do with showing, dismissing and performing actions in a `LPSnackbar`.
  */
 @objc
 open class LPSnackbarManager: NSObject {
-    @objc public static let shared: LPSnackbarManager = LPSnackbarManager(maxSnacks: 3)
+    @objc public static let shared: LPSnackbarManager = LPSnackbarManager()
     
     /// Max number of snacks allowed in the stack
-    private var maxSnacks: Int
+    @objc open var maxSnacks: Int = 3
     
-    private var snacks: [LPSnackbarItem] = [] {
-        didSet {
-            if snacks.count < maxSnacks {
-                snacks.removeFirst().showSnackBar()
-            }
-        }
-    }
+    private var snacks: [LPSnackbarItem] = []
     
-    @objc public init(maxSnacks: Int) {
-        self.maxSnacks = maxSnacks
-        
+    @objc public override init() {
         super.init()
         // Register for snack removal notifications
         NotificationCenter.default.addObserver(self, selector: #selector(self.snackWasRemoved(notification:)),
@@ -59,22 +50,47 @@ open class LPSnackbarManager: NSObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    @objc open func createSnackBar(title: String, buttonTitle: String?) -> LPSnackbar {
-        LPSnackbar(title: title, buttonTitle: buttonTitle)
+    
+    @objc open func createSnackBarOk(title: String) -> LPSnackbar {
+        createSnackBar(title: title, leftIconImage: UIImage(named: "ic_t_ok"))
+    }
+    
+    @objc open func createSnackBarError(title: String) -> LPSnackbar {
+        createSnackBar(title: title, leftIconImage: UIImage(named: "ic_t_error"))
+    }
+    
+    @objc open func createSnackBar(title: String, buttonTitle: String? = nil, leftIconImage: UIImage? = nil) -> LPSnackbar {
+        let snack = LPSnackbar()
+        snack.view.title = title
+        snack.view.leftIconimage = leftIconImage
+        snack.view.buttonTitle = buttonTitle
+        
+        return snack
     }
     
     @objc open func show(snackBar: LPSnackbar,
-              displayDuration: TimeInterval = 3.0,
+              displayDuration: TimeInterval = 2.0,
               animated: Bool = true,
               completion: LPSnackbar.SnackbarCompletion? = nil) {
         snacks.append(LPSnackbarItem(snackBar: snackBar,
                                      displayDuration: displayDuration,
                                      animated: animated,
                                      completion: completion))
+        presentNextSnack()
+    }
+    
+    @objc open func resetSnacks() {
+        snacks.removeAll()
     }
     
     @objc private func snackWasRemoved(notification: Notification) {
-        guard let snackbar = notification.object as? LPSnackbar else { return }
-        snacks.removeAll(where: { $0.checkSnackbar(snackbar) })
+        guard let snackbarView = notification.object as? LPSnackbarView else { return }
+        snacks.removeAll(where: { $0.checkSnackbarView(snackbarView) })
+        presentNextSnack()
+    }
+    
+    private func presentNextSnack() {
+        if snacks.filter({ $0.isDisplayed }).count >= maxSnacks { return }
+        snacks.filter({ !$0.isDisplayed }).prefix(maxSnacks).map({ $0.showSnackBar() })
     }
 }

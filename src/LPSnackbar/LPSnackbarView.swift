@@ -32,162 +32,127 @@ internal let snackRemoval: Notification.Name = Notification.Name(rawValue: "com.
  The `LPSnackbarView` which contains 3 subviews.
  
  - titleLabel: The label on the left hand side of the view used to display text.
- 
  - button: The button on the right hand side of the view which allows an action to be performed.
- 
- - separator: A small view which adds an accent that seperates the `titleLabel` and the `button`.
+
  */
 @objcMembers
 open class LPSnackbarView: UIView {
+    
+    // MARK: IBOutlet
+    
+    @IBOutlet weak var stackView: UIStackView!
+    @IBOutlet weak var leftIconView: UIView!
+    @IBOutlet weak var leftIconImageView: UIImageView?
+    @IBOutlet weak var titleLabel: UILabel?
+    @IBOutlet weak var buttonView: UIView!
+    @IBOutlet weak var rightButton: UIButton?
     
     // MARK: Properties
     
     /// The controller for this view
     internal var controller: LPSnackbar?
     
-    /// The amount of padding from the left handside, used to layout the `titleLabel`, default is `8.0`
-    @objc open var leftPadding: CGFloat = 16.0 {
-        didSet {
-            self.setNeedsLayout()
-        }
-    }
-    
-    /// The amount of padding from the right handside, used to layout the `button`, default is `8.0`
-    @objc open var rightPadding: CGFloat = 8.0 {
-        didSet {
-            self.setNeedsLayout()
-        }
-    }
-    
-    /**
-     The height percent of the total available size that the separator should take up inside the view.
-     
-     ## Important
-     
-     This should only be a value between `0.0` and `1.0`. If this value is set past this range, the value
-     will be reset to the default value of `0.65`.
-     */
-    @objc open var separatorHeightPercent: CGFloat = 0.65 {
-        didSet {
-            // Clamp the percent between the correct range
-            if separatorHeightPercent < 0.0 || separatorHeightPercent > 1.0 {
-                self.separatorHeightPercent = 0.95
-            }
-            self.setNeedsLayout()
-        }
-    }
-    
-    /// The width for the separator, default is `1.5`
-    @objc open var separatorWidth: CGFloat = 1.5 {
-        didSet {
-            self.setNeedsLayout()
-        }
-    }
-    
-    /// The amount of padding from the right side of the separator (next to the button), default is `20.0`
-    @objc open var separatorPadding: CGFloat = 20.0 {
-        willSet {
-            self.setNeedsLayout()
-        }
-    }
-    
-    /// Shows or hides the separator between titleLabel and button. Default is `true`
-    @objc open var showSeparator: Bool = true {
-        willSet {
-            self.setNeedsLayout()
-        }
-    }
+    /// The amount of padding of the stackview`, default is `16.0`
+    @objc open var padding: UIEdgeInsets = UIEdgeInsets(top: 16.0, left: 16.0, bottom: 16.0, right: 16.0)
     
     /// The corner radious of the view, default is `8.0`
-    @objc open var cornerRadius: CGFloat = 8.0 {
-        didSet {
-            self.setNeedsLayout()
-        }
-    }
+    @objc open var cornerRadius: CGFloat = 8.0
     
     /// The backgroundColor of the view, default is `UIColor(red: 44 / 255, green: 44 / 255, blue: 45 / 255, alpha: 1.00)`
-    @objc open var backColor: UIColor = UIColor(red: 44 / 255, green: 44 / 255, blue: 45 / 255, alpha: 1.00) {
+    @objc open var backColor: UIColor = UIColor(red: 44 / 255, green: 44 / 255, blue: 45 / 255, alpha: 1.00)
+    
+    /// The (attributed) title text
+    @objc open var title: String? {
         didSet {
-            self.setNeedsLayout()
+            let style = NSMutableParagraphStyle()
+            style.minimumLineHeight = 18
+            style.maximumLineHeight = 18
+            style.lineBreakMode = .byTruncatingTail
+            titleLabel?.attributedText = NSAttributedString(string: title ?? "",
+                                                            attributes: [.font: UIFont.systemFont(ofSize: 16),
+                                                                         .foregroundColor: UIColor.white,
+                                                                         .paragraphStyle: style])
         }
     }
     
     /// The title color, default is `white`
     @objc open var titleColor: UIColor = UIColor.white {
         didSet {
-            self.setNeedsLayout()
+            titleLabel?.textColor = titleColor
         }
     }
     
     /// The button color, default is `white`
     @objc open var buttonColor: UIColor = UIColor.white {
         didSet {
-            self.setNeedsLayout()
+            rightButton?.setTitleColor(buttonColor, for: .normal)
         }
     }
     
-    /// The shadowcolor. Default is `black`
-    @objc open var showShadow: Bool = true {
-        willSet {
-            self.setNeedsLayout()
+    /// Show shadow or not.. Default is `false`
+    @objc open var showShadow: Bool = false {
+        didSet {
+            layer.shadowColor = showShadow ? UIColor.black.cgColor : UIColor.clear.cgColor
+            layer.shadowRadius = 5.0
+            layer.shadowOpacity = 0.4
         }
     }
     
-    /// The showLeftIcon. Default is `true`
+    /// Show fef iIcon. Default is `false`
     @objc open var showLeftIcon: Bool = false {
-        willSet {
-            self.setNeedsLayout()
+        didSet {
+            leftIconView?.isHidden = !showLeftIcon
+            if !showLeftIcon {
+                if stackView.arrangedSubviews.contains(leftIconView) {
+                    stackView.removeArrangedSubview(leftIconView)
+                }
+            } else if !stackView.arrangedSubviews.contains(leftIconView) {
+                stackView.insertArrangedSubview(leftIconView, at: 0)
+            }
         }
     }
     
-    /// The leftIconimage. Default is `nil`
+    /// The left icon image. Default is `nil`
     @objc open var leftIconimage: UIImage? = nil {
-        willSet {
-            self.setNeedsLayout()
+        didSet {
+            leftIconImageView?.image = leftIconimage
+            showLeftIcon = leftIconimage != nil
+        }
+    }
+    
+    /// The (attributed) button title text
+    @objc open var buttonTitle: String? {
+        didSet {
+            let style = NSMutableParagraphStyle()
+            style.minimumLineHeight = 18
+            style.maximumLineHeight = 18
+            style.lineBreakMode = .byTruncatingTail
+                
+            let attributed = NSAttributedString(string: buttonTitle ?? "",
+                                                attributes: [.font: UIFont.systemFont(ofSize: 16),
+                                                             .foregroundColor: UIColor.orange,
+                                                             .paragraphStyle: style])
+            rightButton?.setAttributedTitle(attributed, for: .normal)
+            showRightButton = buttonTitle != nil
+        }
+    }
+    
+    /// Show right button. Default is `false`
+    @objc open var showRightButton: Bool = false {
+        didSet {
+            buttonView?.isHidden = !showRightButton
+            if !showRightButton {
+                if stackView.arrangedSubviews.contains(buttonView) {
+                    stackView.removeArrangedSubview(buttonView)
+                }
+            } else if !stackView.arrangedSubviews.contains(buttonView) {
+                stackView.addArrangedSubview(buttonView)
+            }
         }
     }
     
     /// The default opacity for the view
-    internal let defaultOpacity: Float = 0.98
-    
-    // MARK: Subviews
-    
-    /// The imageView on the left hand side of the view used to display an image.
-    @objc open lazy var imageView: UIImageView = {
-        let imgView = UIImageView(frame: .zero)
-        imgView.translatesAutoresizingMaskIntoConstraints = false
-        imgView.contentMode = .scaleAspectFit
-        imgView.image = leftIconimage
-        return imgView
-    }()
-    
-    /// The label on the left hand side of the view used to display text.
-    @objc open lazy var titleLabel: UILabel = {
-        let label = UILabel(frame: .zero)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textAlignment = .left
-        label.textColor = titleColor
-        label.numberOfLines = 0
-        return label
-    }()
-    
-    /// The button on the right hand side of the view which allows an action to be performed.
-    @objc open lazy var button: UIButton = {
-        let button = UIButton(frame: .zero)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitleColor(buttonColor, for: .normal)
-        button.addTarget(self, action: #selector(self.buttonTapped(sender:)), for: .touchUpInside)
-        return button
-    }()
-    
-    /// A small view which adds an accent that seperates the `titleLabel` and the `button`.
-    @objc open lazy var separator: UIView = {
-        let separator = UIView(frame: .zero)
-        separator.isAccessibilityElement = false
-        separator.backgroundColor = UIColor(red: 0.366, green: 0.364, blue: 0.368, alpha: 1.00)
-        separator.layer.cornerRadius = 2.0
-        return separator
-    }()
+    internal let defaultOpacity: Float = 1.0
     
     // MARK: Overrides
     
@@ -203,17 +168,6 @@ open class LPSnackbarView: UIView {
         initialize()
     }
     
-    /// Overriden, lays out the `separator`
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        // Layout the separator, want it next to the button and centered vertically
-        let separatorHeight = frame.height * separatorHeightPercent
-        let separatorY = (frame.height - separatorHeight) / 2
-        separator.frame = CGRect(x: button.frame.minX - separatorWidth - separatorPadding, y: separatorY,
-                                 width: separatorWidth, height: separatorHeight)
-    }
-    
     /// Overriden, posts `snackRemoval` notification.
     open override func removeFromSuperview() {
         super.removeFromSuperview()
@@ -222,67 +176,35 @@ open class LPSnackbarView: UIView {
         NotificationCenter.default.post(notification)
     }
     
+    open override func didMoveToWindow() {
+        super.didMoveToWindow()
+        
+        rightButton?.addTarget(self, action: #selector(self.buttonTapped(sender:)), for: .touchUpInside)
+        
+        stackView?.layoutMargins = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        stackView.isLayoutMarginsRelativeArrangement = true
+    }
+    
     // MARK: Private methods
     
     /// Helper initializer which sets some customization for the view and adds the subviews/constraints.
     private func initialize() {
-        // Since this self is a container view, set accessibilty element to false
-        isAccessibilityElement = false
+        // Accesibility
+        isAccessibilityElement = true
+        accessibilityLabel = titleLabel?.text
+        accessibilityIdentifier = "LPSnackbarView.snack"
         
         // Customize UI
-        autoresizingMask = [.flexibleWidth, .flexibleHeight]
         backgroundColor = backColor
+        
         layer.opacity = defaultOpacity
         layer.cornerRadius = cornerRadius
-        
-        layer.shadowColor = showShadow ? UIColor.black.cgColor : UIColor.clear.cgColor
-        layer.shadowRadius = 5.0
-        layer.shadowOpacity = 0.4
-        
-        // Add subviews
-        if showLeftIcon {
-            addSubview(imageView)
-        }
-        addSubview(titleLabel)
-        addSubview(button)
-        
-        if showSeparator {
-            addSubview(separator)
-        }
-        
-        //// Add constraints
-        if showLeftIcon {
-            NSLayoutConstraint(item: imageView, attribute: .width, relatedBy: .equal, toItem: nil,
-                               attribute: .notAnAttribute, multiplier: 1, constant: 20).isActive = true
-            NSLayoutConstraint(item: imageView, attribute: .height, relatedBy: .equal, toItem: nil,
-                               attribute: .notAnAttribute, multiplier: 1, constant: 20).isActive = true
-            NSLayoutConstraint(item: imageView, attribute: .height, relatedBy: .equal,
-                               toItem: self, attribute: .leadingMargin, multiplier: 1.0, constant: leftPadding).isActive = true
-            NSLayoutConstraint(item: imageView, attribute: .leading, relatedBy: .equal,
-                               toItem: self, attribute: .leadingMargin, multiplier: 1.0, constant: leftPadding).isActive = true
-            NSLayoutConstraint(item: imageView, attribute: .centerY, relatedBy: .equal,
-                               toItem: self, attribute: .centerY, multiplier: 1.0, constant: 0.0).isActive = true
-            NSLayoutConstraint(item: imageView, attribute: .trailing, relatedBy: .equal,
-                               toItem: titleLabel, attribute: .trailingMargin, multiplier: 1.0, constant: leftPadding).isActive = true
-            
-            NSLayoutConstraint(item: titleLabel, attribute: .trailing, relatedBy: .equal,
-                           toItem: button, attribute: .trailingMargin, multiplier: 1.0, constant: leftPadding).isActive = true
-        } else {
-            NSLayoutConstraint(item: titleLabel, attribute: .trailing, relatedBy: .equal,
-                               toItem: self, attribute: .trailingMargin, multiplier: 1.0, constant: leftPadding).isActive = true
-        }
-        
-        NSLayoutConstraint(item: titleLabel, attribute: .centerY, relatedBy: .equal,
-                           toItem: self, attribute: .centerY, multiplier: 1.0, constant: 0.0).isActive = true
+        layer.masksToBounds = true
 
-        NSLayoutConstraint(item: button, attribute: .trailing, relatedBy: .equal,
-                           toItem: self, attribute: .trailingMargin, multiplier: 1.0, constant: -rightPadding).isActive = true
-        NSLayoutConstraint(item: button, attribute: .centerY, relatedBy: .equal,
-                           toItem: self, attribute: .centerY, multiplier: 1.0, constant: 0.0).isActive = true
-        
         // Register for device rotation notifications
         NotificationCenter.default.addObserver(self, selector: #selector(self.didRotate(notification:)),
                                                name: UIDevice.orientationDidChangeNotification, object: nil)
+        
     }
     
     /// Called whenever the screen is rotated, this will ask the controller to recalculate the frame for the view.
@@ -310,3 +232,9 @@ open class LPSnackbarView: UIView {
     }
 }
 
+// Gift extension
+extension UIView {
+    class func fromNib<T: UIView>() -> T {
+        return Bundle(for: T.self).loadNibNamed(String(describing: T.self), owner: nil, options: nil)![0] as! T
+    }
+}
