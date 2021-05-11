@@ -180,9 +180,6 @@ open class LPSnackbarView: UIView {
         super.didMoveToWindow()
         
         rightButton?.addTarget(self, action: #selector(self.buttonTapped(sender:)), for: .touchUpInside)
-        
-        stackView?.layoutMargins = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
-        stackView.isLayoutMarginsRelativeArrangement = true
     }
     
     // MARK: Private methods

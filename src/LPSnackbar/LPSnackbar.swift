@@ -116,6 +116,9 @@ open class LPSnackbar: NSObject {
     /// Whether or not the snackbar will be show at front or under the view to display in
     @objc open var showUnderViewToDisplayIn: Bool = false
     
+    /// Whether or not the view support gestures to dismiss.
+    @objc open var allowGestures: Bool = false
+    
     /// The completion block for an `LPSnackbar`, `true` is sent if button was tapped, `false` otherwise.
     public typealias SnackbarCompletion = (Bool) -> Void
 
@@ -147,11 +150,11 @@ open class LPSnackbar: NSObject {
     /**
      Presents the snackView to the screen
      - Parameters:
-     - displayDuration: How long to show the snack for, if `nil`, will show forever. Default = `3.0`
+     - displayDuration: How long to show the snack for, if `nil`, will show forever. Default = `2.0`
      - animated: Whether or not the snack should animate in and out. Default = `true`
      - completion: The completion handler for when the snack is removed/button pressed. Default = `nil`
      */
-    @objc open func show(displayDuration: TimeInterval = 3.0, animated: Bool = true, completion: SnackbarCompletion? = nil) {
+    @objc open func show(displayDuration: TimeInterval = 2.0, animated: Bool = true, completion: SnackbarCompletion? = nil) {
         guard let superview = viewToDisplayIn ?? UIApplication.shared.keyWindow ?? nil else {
             fatalError("Unable to get a superview, was not able to show\n Couldn't add LPSnackbarView as a subview to the main UIWindow")
         }
@@ -227,16 +230,18 @@ open class LPSnackbar: NSObject {
         }
         
         // Add gesture recognizers for swipes
-        let left = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipes(sender:)))
-        left.direction = .left
-        let right = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipes(sender:)))
-        right.direction = .right
-        let down = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipes(sender:)))
-        down.direction = .down
-        
-        view.addGestureRecognizer(left)
-        view.addGestureRecognizer(right)
-        view.addGestureRecognizer(down)
+        if allowGestures {
+            let left = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipes(sender:)))
+            left.direction = .left
+            let right = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipes(sender:)))
+            right.direction = .right
+            let down = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipes(sender:)))
+            down.direction = .down
+
+            view.addGestureRecognizer(left)
+            view.addGestureRecognizer(right)
+            view.addGestureRecognizer(down)
+        }
         
         // Register for snack removal notifications
         NotificationCenter.default.addObserver(self, selector: #selector(self.snackWasRemoved(notification:)),
@@ -320,13 +325,13 @@ open class LPSnackbar: NSObject {
     /// Animates the view in by moving down towards the edge of the screen and fading it out
     private func animateOut(wasButtonTapped: Bool = false) {
         let frame = view.frame
-        let outY = frame.origin.y + height + bottomSpacing
+        let outY = frame.origin.y + height + bottomSpacing + (view.superview?.safeAreaInsets.bottom ?? 0.0)
         let pos = CGPoint(x: frame.origin.x, y: outY)
 
         UIView.animate(
             withDuration: animationDuration,
             animations: {
-                self.view.frame = CGRect(origin: pos, size: frame.size)
+                self.view.frame.origin.y = outY
                 self.view.layer.opacity = 0.0
         }, completion: { _ in
             // Call the completion handler
