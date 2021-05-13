@@ -189,7 +189,7 @@ open class LPSnackbar: NSObject {
         view.titleLabel?.sizeToFit()
         
         let currentHeight = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-        height = currentHeight < 50 ? 50 : currentHeight + 4
+        height = currentHeight <= 50 ? 50 : currentHeight + 4
         
         // Set completion and animate the view if allowed
         self.completion = completion
