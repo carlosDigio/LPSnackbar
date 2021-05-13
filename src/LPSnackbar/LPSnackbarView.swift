@@ -63,36 +63,37 @@ open class LPSnackbarView: UIView {
     
     /// The (attributed) title text
     @objc open var title: String? {
-        didSet {
+        willSet {
             let style = NSMutableParagraphStyle()
             style.minimumLineHeight = 18
             style.maximumLineHeight = 18
             style.lineBreakMode = .byTruncatingTail
-            titleLabel?.attributedText = NSAttributedString(string: title ?? "",
+            titleLabel?.attributedText = NSAttributedString(string: newValue ?? "",
                                                             attributes: [.font: UIFont.systemFont(ofSize: 16),
                                                                          .foregroundColor: UIColor.white,
                                                                          .paragraphStyle: style])
+            titleLabel?.sizeToFit()
         }
     }
     
     /// The title color, default is `white`
     @objc open var titleColor: UIColor = UIColor.white {
-        didSet {
-            titleLabel?.textColor = titleColor
+        willSet {
+            titleLabel?.textColor = newValue
         }
     }
     
     /// The button color, default is `white`
     @objc open var buttonColor: UIColor = UIColor.white {
-        didSet {
-            rightButton?.setTitleColor(buttonColor, for: .normal)
+        willSet {
+            rightButton?.setTitleColor(newValue, for: .normal)
         }
     }
     
     /// Show shadow or not.. Default is `false`
     @objc open var showShadow: Bool = false {
-        didSet {
-            layer.shadowColor = showShadow ? UIColor.black.cgColor : UIColor.clear.cgColor
+        willSet {
+            layer.shadowColor = newValue ? UIColor.black.cgColor : UIColor.clear.cgColor
             layer.shadowRadius = 5.0
             layer.shadowOpacity = 0.4
         }
@@ -100,54 +101,42 @@ open class LPSnackbarView: UIView {
     
     /// Show fef iIcon. Default is `false`
     @objc open var showLeftIcon: Bool = false {
-        didSet {
-            leftIconView?.isHidden = !showLeftIcon
-            if !showLeftIcon {
-                if stackView.arrangedSubviews.contains(leftIconView) {
-                    stackView.removeArrangedSubview(leftIconView)
-                }
-            } else if !stackView.arrangedSubviews.contains(leftIconView) {
-                stackView.insertArrangedSubview(leftIconView, at: 0)
-            }
+        willSet {
+            leftIconView?.isHidden = !newValue
         }
     }
     
     /// The left icon image. Default is `nil`
     @objc open var leftIconimage: UIImage? = nil {
-        didSet {
-            leftIconImageView?.image = leftIconimage
-            showLeftIcon = leftIconimage != nil
+        willSet {
+            leftIconImageView?.image = newValue
+            showLeftIcon = newValue != nil
         }
     }
     
     /// The (attributed) button title text
     @objc open var buttonTitle: String? {
-        didSet {
+        willSet {
+            showRightButton = newValue != nil
+            
             let style = NSMutableParagraphStyle()
             style.minimumLineHeight = 18
             style.maximumLineHeight = 18
             style.lineBreakMode = .byTruncatingTail
                 
-            let attributed = NSAttributedString(string: buttonTitle ?? "",
+            let attributed = NSAttributedString(string: newValue ?? "",
                                                 attributes: [.font: UIFont.systemFont(ofSize: 16),
                                                              .foregroundColor: UIColor.orange,
                                                              .paragraphStyle: style])
             rightButton?.setAttributedTitle(attributed, for: .normal)
-            showRightButton = buttonTitle != nil
+            rightButton?.sizeToFit()
         }
     }
     
     /// Show right button. Default is `false`
     @objc open var showRightButton: Bool = false {
-        didSet {
-            buttonView?.isHidden = !showRightButton
-            if !showRightButton {
-                if stackView.arrangedSubviews.contains(buttonView) {
-                    stackView.removeArrangedSubview(buttonView)
-                }
-            } else if !stackView.arrangedSubviews.contains(buttonView) {
-                stackView.addArrangedSubview(buttonView)
-            }
+        willSet {
+            buttonView?.isHidden = !newValue
         }
     }
     

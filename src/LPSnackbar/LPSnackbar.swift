@@ -82,11 +82,12 @@ open class LPSnackbar: NSObject {
      The bottom spacing for the `view`.
 
      For example, by default the `view` is placed in the main `UIWindow` of an application with a default
-     bottom spacing of `12.0`, however, if you have a `UITabBarController` you may want to increase the bottom spacing
+     bottom spacing of `16.0`, however, if you have a `UITabBarController` you may want to increase the bottom spacing
      so that the snack is presented above the bar.
      */
     @objc open var bottomSpacing: CGFloat = 16.0 {
         didSet {
+            if bottomSpacing > 16 { bottomSpacing += 16 }
             // Update frame
             self.view.setNeedsLayout()
         }
@@ -105,10 +106,19 @@ open class LPSnackbar: NSObject {
 
      Only used in iOS 11.0 +
      */
-    @objc open var adjustsPositionForSafeArea: Bool = true
+    @objc open var adjustsPositionForSafeArea: Bool = false
 
     /// Optional view to display the `view` in, by default this is `nil`, thus the main `UIWindow` is used for presentation.
     @objc open weak var viewToDisplayIn: UIView?
+    
+    /// Optional index  to display the `view`.
+    @objc open var viewIndex: Int = 0
+    
+    /// Optional insert below view. ↓ By default this is `nil`
+    @objc open var insertBelowView: UIView?
+    
+    /// Optional insert above view. ↑ By default this is `nil`
+    @objc open var insertAboveView: UIView?
 
     /// The duration for the animation of both the adding and removal of the `view`.
     @objc open var animationDuration: TimeInterval = 0.5
@@ -160,7 +170,13 @@ open class LPSnackbar: NSObject {
         }
         
         // Add as subview
-        superview.addSubview(view)
+        if let belowView = insertBelowView {
+            superview.insertSubview(view, belowSubview: belowView)
+        } else if let aboveView = insertAboveView {
+            superview.insertSubview(view, aboveSubview: aboveView)
+        } else {
+            superview.insertSubview(view, at: viewIndex)
+        }
         
         if showUnderViewToDisplayIn {
             superview.sendSubviewToBack(view)
@@ -267,7 +283,7 @@ open class LPSnackbar: NSObject {
         // Set frame for view
         let width: CGFloat = superview.bounds.width * widthPercent
         let startX: CGFloat = (superview.bounds.width - width) / 2.0
-        let startY: CGFloat
+        var startY: CGFloat
         
         // Check to see if a snackbar is already being presented in this view
         var snackView: LPSnackbarView?
@@ -277,7 +293,7 @@ open class LPSnackbar: NSObject {
                     break
                 }
             } else if sub is LPSnackbarView {
-                view.layer.zPosition = CGFloat(1000 - (index + 1))
+                view.layer.zPosition = CGFloat(0 - (index + 1))
             }
             // Loop until we find the last snack view, since it should be the last one displayed in the superview
             // and the snack view should be below the current snack view
@@ -289,8 +305,12 @@ open class LPSnackbar: NSObject {
         if let snack = snackView {
             startY = snack.frame.maxY - snack.frame.height - height - stackedBottomSpacing
         } else {
-            view.layer.zPosition = 1000
-            startY = superview.bounds.maxY - height - bottomSpacing - superview.safeAreaInsets.bottom
+            view.layer.zPosition = 0
+            startY = superview.bounds.maxY - height - bottomSpacing
+            
+            if adjustsPositionForSafeArea {
+                startY -= superview.safeAreaInsets.bottom
+            }
         }
         
         return CGRect(x: startX, y: startY, width: width, height: height)
