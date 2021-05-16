@@ -24,4 +24,8 @@ Pod::Spec.new do |s|
 
   s.source_files  = "src/LPSnackbar", "src/LPSnackbar/**/*.{h,m,xib}"
   s.resources     = "src/LPSnackbar/**/*.{png,pdf}"
+
+  s.resource_bundles = {
+    'LPSnackbar' => ['src/LPSnackbar/**/*.{xcassets}']
+  }
 end

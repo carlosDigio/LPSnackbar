@@ -106,7 +106,7 @@ open class LPSnackbar: NSObject {
         }
     }
 
-    /// Whether or not the snackbar should adjust to fit within the safe area's of it's parent view.
+    /// Whether or not the snackbar should adjust to fit within the safe area's of it's parent view. By default this is `false`.
     @objc open var adjustsPositionForSafeArea: Bool = true
 
     /// Optional view to display the `view` in, by default this is `nil`, thus the main `UIWindow` is used for presentation.
@@ -127,7 +127,7 @@ open class LPSnackbar: NSObject {
     /// Whether or not the snackbar will be show at front or under the view to display in
     @objc open var showUnderViewToDisplayIn: Bool = false
     
-    /// Whether or not the view support gestures to dismiss.
+    /// Whether or not the view support gestures to dismiss. By default this is `false`
     @objc open var allowGestures: Bool = false
     
     /// The completion block for an `LPSnackbar`, `true` is sent if button was tapped, `false` otherwise.
@@ -178,11 +178,13 @@ open class LPSnackbar: NSObject {
         } else if let aboveView = insertAboveView {
             superview.insertSubview(view, aboveSubview: aboveView)
         } else {
-            superview.insertSubview(view, at: viewIndex)
+            superview.addSubview(view)
         }
         
         if showUnderViewToDisplayIn {
             superview.sendSubviewToBack(view)
+        } else {
+            superview.bringSubviewToFront(view)
         }
         
         view.layoutSubviews()
