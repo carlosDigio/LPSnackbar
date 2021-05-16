@@ -23,5 +23,5 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/carlosDigio/LPSnackbar.git", :tag => "v#{s.version}" }
 
   s.source_files  = "src/LPSnackbar", "src/LPSnackbar/**/*.{h,m,xib}"
-  s.resources     = "src/LPSnackbar/**/*.{h,m,xib,png,pdf}"
+  s.resources     = "src/LPSnackbar/**/*.{png,pdf}"
 end
