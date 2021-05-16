@@ -26,7 +26,7 @@
 import UIKit
 
 @objcMembers
-open class LPSnackbarItem: NSObject {
+internal class LPSnackbarItem: NSObject {
     var snackBar: LPSnackbar
     var displayDuration: TimeInterval
     var animated: Bool

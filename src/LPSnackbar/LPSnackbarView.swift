@@ -26,7 +26,7 @@
 import UIKit
 
 /// The `Notification.Name` for when a `LPSnackbarView` has been removed from it's superview.
-internal let snackRemoval: Notification.Name = Notification.Name(rawValue: "com.lpSnackbar.removalNotification")
+internal let snackRemoval: Notification.Name = Notification.Name(rawValue: "com.lpsnackbar.removalNotification")
 
 /**
  The `LPSnackbarView` which contains 3 subviews.
@@ -36,7 +36,7 @@ internal let snackRemoval: Notification.Name = Notification.Name(rawValue: "com.
 
  */
 @objcMembers
-open class LPSnackbarView: UIView {
+internal class LPSnackbarView: UIView {
     
     // MARK: IBOutlet
     
@@ -53,16 +53,16 @@ open class LPSnackbarView: UIView {
     internal var controller: LPSnackbar?
     
     /// The amount of padding of the stackview`, default is `16.0`
-    @objc open var padding: UIEdgeInsets = UIEdgeInsets(top: 16.0, left: 16.0, bottom: 16.0, right: 16.0)
+    @objc internal var padding: UIEdgeInsets = UIEdgeInsets(top: 16.0, left: 16.0, bottom: 16.0, right: 16.0)
     
     /// The corner radious of the view, default is `8.0`
-    @objc open var cornerRadius: CGFloat = 8.0
+    @objc internal var cornerRadius: CGFloat = 8.0
     
     /// The backgroundColor of the view, default is `UIColor(red: 44 / 255, green: 44 / 255, blue: 45 / 255, alpha: 1.00)`
-    @objc open var backColor: UIColor = UIColor(red: 44 / 255, green: 44 / 255, blue: 45 / 255, alpha: 1.00)
+    @objc internal var backColor: UIColor = UIColor(red: 44 / 255, green: 44 / 255, blue: 45 / 255, alpha: 1.00)
     
     /// The (attributed) title text
-    @objc open var title: String? {
+    @objc internal var title: String? {
         willSet {
             let style = NSMutableParagraphStyle()
             style.minimumLineHeight = 18
@@ -77,21 +77,21 @@ open class LPSnackbarView: UIView {
     }
     
     /// The title color, default is `white`
-    @objc open var titleColor: UIColor = UIColor.white {
+    @objc internal var titleColor: UIColor = UIColor.white {
         willSet {
             titleLabel?.textColor = newValue
         }
     }
     
     /// The button color, default is `white`
-    @objc open var buttonColor: UIColor = UIColor.white {
+    @objc internal var buttonColor: UIColor = UIColor.white {
         willSet {
             rightButton?.setTitleColor(newValue, for: .normal)
         }
     }
     
     /// Show shadow or not.. Default is `false`
-    @objc open var showShadow: Bool = false {
+    @objc internal var showShadow: Bool = false {
         willSet {
             layer.shadowColor = newValue ? UIColor.black.cgColor : UIColor.clear.cgColor
             layer.shadowRadius = 5.0
@@ -100,14 +100,14 @@ open class LPSnackbarView: UIView {
     }
     
     /// Show fef iIcon. Default is `false`
-    @objc open var showLeftIcon: Bool = false {
+    @objc internal var showLeftIcon: Bool = false {
         willSet {
             leftIconView?.isHidden = !newValue
         }
     }
     
     /// The left icon image. Default is `nil`
-    @objc open var leftIconimage: UIImage? = nil {
+    @objc internal var leftIconimage: UIImage? = nil {
         willSet {
             leftIconImageView?.image = newValue
             showLeftIcon = newValue != nil
@@ -115,7 +115,7 @@ open class LPSnackbarView: UIView {
     }
     
     /// The (attributed) button title text
-    @objc open var buttonTitle: String? {
+    @objc internal var buttonTitle: String? {
         willSet {
             showRightButton = newValue != nil
             
@@ -134,7 +134,7 @@ open class LPSnackbarView: UIView {
     }
     
     /// Show right button. Default is `false`
-    @objc open var showRightButton: Bool = false {
+    @objc internal var showRightButton: Bool = false {
         willSet {
             buttonView?.isHidden = !newValue
         }
@@ -158,14 +158,14 @@ open class LPSnackbarView: UIView {
     }
     
     /// Overriden, posts `snackRemoval` notification.
-    open override func removeFromSuperview() {
+    internal override func removeFromSuperview() {
         super.removeFromSuperview()
         // Will be removed from superview, post notification
         let notification = Notification(name: snackRemoval, object: self)
         NotificationCenter.default.post(notification)
     }
     
-    open override func didMoveToWindow() {
+    internal override func didMoveToWindow() {
         super.didMoveToWindow()
         
         rightButton?.addTarget(self, action: #selector(self.buttonTapped(sender:)), for: .touchUpInside)
@@ -198,7 +198,7 @@ open class LPSnackbarView: UIView {
         // Layout the view/subviews again
         DispatchQueue.main.async {
             // Set frame for self
-            self.frame = self.controller?.frameForView() ?? .zero
+            self.frame = self.controller?.frameForView(recalculate: true) ?? .zero
         }
     }
     

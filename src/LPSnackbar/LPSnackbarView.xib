@@ -10,17 +10,17 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" insetsLayoutMarginsFromSafeArea="NO" id="iN0-l3-epB" customClass="LPSnackbarView" customModule="LPSnackbar" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="380" height="81"/>
+            <rect key="frame" x="0.0" y="0.0" width="380" height="51"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="1000" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" insetsLayoutMarginsFromSafeArea="NO" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="zxx-11-qTW">
-                    <rect key="frame" x="16" y="14" width="348" height="53"/>
+                    <rect key="frame" x="16" y="16" width="348" height="19"/>
                     <subviews>
                         <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dVJ-0S-KSS">
-                            <rect key="frame" x="0.0" y="0.0" width="25" height="50"/>
+                            <rect key="frame" x="0.0" y="0.0" width="25" height="19"/>
                             <subviews>
                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="752" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5ei-rM-QwG">
-                                    <rect key="frame" x="0.0" y="1" width="25" height="25"/>
+                                    <rect key="frame" x="0.0" y="2" width="25" height="25"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="25" id="kGd-bT-bbz"/>
                                         <constraint firstAttribute="height" constant="25" id="pEX-Qa-TTb"/>
@@ -29,16 +29,15 @@
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
-                                <constraint firstItem="5ei-rM-QwG" firstAttribute="top" secondItem="dVJ-0S-KSS" secondAttribute="top" constant="1" id="5Sp-Uf-MhR"/>
                                 <constraint firstItem="5ei-rM-QwG" firstAttribute="leading" secondItem="dVJ-0S-KSS" secondAttribute="leading" id="KyW-SJ-6A3"/>
                                 <constraint firstAttribute="trailing" secondItem="5ei-rM-QwG" secondAttribute="trailing" id="kjE-yn-fcF"/>
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ag0-LY-EIZ">
-                            <rect key="frame" x="41" y="0.0" width="245" height="53"/>
+                            <rect key="frame" x="41" y="0.0" width="245" height="19"/>
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" horizontalCompressionResistancePriority="749" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" insetsLayoutMarginsFromSafeArea="NO" text="Label Label Label Label Label Label Label " lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vHN-OJ-Zxh">
-                                    <rect key="frame" x="0.0" y="0.0" width="245" height="53"/>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" horizontalCompressionResistancePriority="749" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" insetsLayoutMarginsFromSafeArea="NO" text="Label Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vHN-OJ-Zxh">
+                                    <rect key="frame" x="0.0" y="0.0" width="245" height="19"/>
                                     <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="17"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
@@ -53,10 +52,10 @@
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wqp-wa-ua8">
-                            <rect key="frame" x="302" y="0.0" width="46" height="53"/>
+                            <rect key="frame" x="302" y="0.0" width="46" height="19"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="252" horizontalCompressionResistancePriority="752" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" insetsLayoutMarginsFromSafeArea="NO" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5L2-Jg-iwa">
-                                    <rect key="frame" x="0.0" y="0.0" width="46" height="53"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="46" height="19"/>
                                     <state key="normal" title="Button"/>
                                 </button>
                             </subviews>
@@ -72,6 +71,7 @@
                     <constraints>
                         <constraint firstItem="wqp-wa-ua8" firstAttribute="height" secondItem="zxx-11-qTW" secondAttribute="height" id="W3o-zw-dXJ"/>
                         <constraint firstItem="ag0-LY-EIZ" firstAttribute="height" secondItem="zxx-11-qTW" secondAttribute="height" id="lYO-JT-yaR"/>
+                        <constraint firstItem="5ei-rM-QwG" firstAttribute="top" secondItem="vHN-OJ-Zxh" secondAttribute="top" constant="2" id="mmD-Yx-qV1"/>
                     </constraints>
                 </stackView>
             </subviews>
@@ -83,8 +83,8 @@
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="zxx-11-qTW" secondAttribute="trailing" constant="16" id="AG4-Dq-mHq"/>
                 <constraint firstItem="zxx-11-qTW" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="16" id="LCG-UN-BaR"/>
-                <constraint firstAttribute="bottom" secondItem="zxx-11-qTW" secondAttribute="bottom" constant="14" id="fiO-pE-33l"/>
-                <constraint firstItem="zxx-11-qTW" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="14" id="iTf-AA-0RW"/>
+                <constraint firstAttribute="bottom" secondItem="zxx-11-qTW" secondAttribute="bottom" constant="16" id="fiO-pE-33l"/>
+                <constraint firstItem="zxx-11-qTW" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="16" id="iTf-AA-0RW"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
@@ -97,7 +97,7 @@
                 <outlet property="stackView" destination="zxx-11-qTW" id="BVr-wc-ex6"/>
                 <outlet property="titleLabel" destination="vHN-OJ-Zxh" id="rUi-Mb-but"/>
             </connections>
-            <point key="canvasLocation" x="-1255.072463768116" y="-426.89732142857139"/>
+            <point key="canvasLocation" x="-1255.072463768116" y="-436.94196428571428"/>
         </view>
     </objects>
 </document>

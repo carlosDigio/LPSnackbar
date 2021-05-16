@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="22" translatesAutoresizingMaskIntoConstraints="NO" id="vFp-TD-wrW">
+                                <rect key="frame" x="41.5" y="320" width="331" height="266"/>
+                                <subviews>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Snackbar message" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dIH-Z0-X7X">
+                                        <rect key="frame" x="0.0" y="0.0" width="331" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EAQ-i1-PFE">
+                                        <rect key="frame" x="0.0" y="56" width="331" height="36"/>
+                                        <color key="backgroundColor" systemColor="systemOrangeColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                        <state key="normal" title="SnackbarMe! (No icon)"/>
+                                        <connections>
+                                            <action selector="firstButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Dx4-gx-JvV"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8gX-H6-uv3">
+                                        <rect key="frame" x="0.0" y="114" width="331" height="36"/>
+                                        <color key="backgroundColor" systemColor="systemOrangeColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                        <state key="normal" title="SnackbarMe! (OK)"/>
+                                        <connections>
+                                            <action selector="secondButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="oa1-Y6-cZs"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7xX-g1-5ew">
+                                        <rect key="frame" x="0.0" y="172" width="331" height="36"/>
+                                        <color key="backgroundColor" systemColor="systemOrangeColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                        <state key="normal" title="SnackbarMe! (Error)"/>
+                                        <connections>
+                                            <action selector="thirdButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Igl-7A-e9O"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TaB-hB-Eyr">
+                                        <rect key="frame" x="0.0" y="230" width="331" height="36"/>
+                                        <color key="backgroundColor" systemColor="systemOrangeColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                        <state key="normal" title="SnackbarMe! (Button)"/>
+                                        <connections>
+                                            <action selector="fourthButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="j4f-jL-w1e"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LPSnackbar example" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OgS-9c-wRv">
+                                <rect key="frame" x="71.5" y="186" width="271.5" height="36"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="dIH-Z0-X7X" firstAttribute="top" secondItem="OgS-9c-wRv" secondAttribute="bottom" constant="98" id="MTz-qX-iro"/>
+                            <constraint firstItem="vFp-TD-wrW" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.8" id="ayf-Yd-ry8"/>
+                            <constraint firstItem="vFp-TD-wrW" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="eEi-v1-KCl"/>
+                            <constraint firstItem="OgS-9c-wRv" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="faS-Ie-kzg"/>
+                            <constraint firstItem="OgS-9c-wRv" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="g8y-Qt-Nvh"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="OgS-9c-wRv" secondAttribute="trailing" constant="20" id="qLi-aI-gJo"/>
+                            <constraint firstItem="vFp-TD-wrW" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="rIS-Fh-rdX"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="firstButton" destination="EAQ-i1-PFE" id="aKI-Wy-9Tj"/>
+                        <outlet property="fourthButton" destination="TaB-hB-Eyr" id="QMi-0g-M0g"/>
+                        <outlet property="secondButton" destination="8gX-H6-uv3" id="RYj-6g-4t9"/>
+                        <outlet property="textfield" destination="dIH-Z0-X7X" id="rjy-yz-ed4"/>
+                        <outlet property="thirdButton" destination="7xX-g1-5ew" id="nfq-Ev-YUY"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-20" y="84"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemOrangeColor">
+            <color red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

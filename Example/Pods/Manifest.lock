@@ -1,0 +1,17 @@
+PODS:
+  - LPSnackbar (4.0.2)
+
+DEPENDENCIES:
+  - LPSnackbar (from `../../LPSnackbar`)
+
+EXTERNAL SOURCES:
+  LPSnackbar:
+    :branch: develop
+    :path: "../../LPSnackbar"
+
+SPEC CHECKSUMS:
+  LPSnackbar: d400e6d288e46a4b675f9ccbd670a8791cecadab
+
+PODFILE CHECKSUM: 90c7101ae495da66d5b03e3a2450e3f2b66567c0
+
+COCOAPODS: 1.10.1
