@@ -179,12 +179,12 @@ open class LPSnackbar: NSObject {
             superview.insertSubview(view, aboveSubview: aboveView)
         } else {
             superview.addSubview(view)
-        }
         
-        if showUnderViewToDisplayIn {
-            superview.sendSubviewToBack(view)
-        } else {
-            superview.bringSubviewToFront(view)
+            if showUnderViewToDisplayIn {
+                superview.sendSubviewToBack(view)
+            } else {
+                superview.bringSubviewToFront(view)
+            }
         }
         
         view.layoutSubviews()
