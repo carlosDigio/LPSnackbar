@@ -112,8 +112,8 @@ open class LPSnackbar: NSObject {
     /// Optional view to display the `view` in, by default this is `nil`, thus the main `UIWindow` is used for presentation.
     @objc open weak var viewToDisplayIn: UIView?
     
-    /// Optional index  to display the `view`. By default this is `999`
-    @objc open var viewIndex: Int = 999
+    /// Optional index  to display the `view`. By default this is `997`
+    @objc open var viewIndex: Int = 997
     
     /// Optional insert below view. ↓ By default this is `nil`
     @objc open var insertBelowView: UIView?
@@ -476,3 +476,11 @@ open class LPSnackbar: NSObject {
     }
 }
 
+extension UILabel {
+    func getSize(constrainedWidth: CGFloat) -> CGSize {
+        return systemLayoutSizeFitting(CGSize(width: constrainedWidth,
+                                              height: UIView.layoutFittingCompressedSize.height),
+                                       withHorizontalFittingPriority: .required,
+                                       verticalFittingPriority: .fittingSizeLevel)
+    }
+}
