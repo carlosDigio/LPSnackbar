@@ -50,20 +50,6 @@ open class LPSnackbarManager: NSObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    /// Create a OK snackbar with title
-    @objc public static func createSnackBarOk(title: String, delegate: LPSnackbarDelegate? = nil) -> LPSnackbar {
-        let bundle = Bundle(identifier: "LPSnackbar-LPSnackbar") ?? Bundle(for: self)
-        let leftIconImage = UIImage(named: "ic_t_ok", in: bundle, compatibleWith: nil)
-        return createSnackBar(title: title, leftIconImage: leftIconImage, delegate: delegate)
-    }
-    
-    /// Create a error snackbar with title
-    @objc public static func createSnackBarError(title: String, delegate: LPSnackbarDelegate? = nil) -> LPSnackbar {
-        let bundle = Bundle(identifier: "LPSnackbar-LPSnackbar") ?? Bundle(for: self)
-        let leftIconImage = UIImage(named: "ic_t_error", in: bundle, compatibleWith: nil)
-        return createSnackBar(title: title, leftIconImage: leftIconImage, delegate: delegate)
-    }
-    
     /// Create a custom snackbar with title, button title (optional) and left icon (optional)
     @objc public static func createSnackBar(title: String, buttonTitle: String? = nil, leftIconImage: UIImage? = nil, delegate: LPSnackbarDelegate? = nil) -> LPSnackbar {
         let snack = LPSnackbar()

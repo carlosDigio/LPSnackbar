@@ -475,12 +475,3 @@ open class LPSnackbar: NSObject {
         view.removeFromSuperview()
     }
 }
-
-extension UILabel {
-    func getSize(constrainedWidth: CGFloat) -> CGSize {
-        return systemLayoutSizeFitting(CGSize(width: constrainedWidth,
-                                              height: UIView.layoutFittingCompressedSize.height),
-                                       withHorizontalFittingPriority: .required,
-                                       verticalFittingPriority: .fittingSizeLevel)
-    }
-}

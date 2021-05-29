@@ -34,7 +34,7 @@ class ViewController: UIViewController {
         var text: String = textfield.text ?? "Example"
         if text.isEmpty { text = "Example" }
         
-        let snackbar = LPSnackbarManager.createSnackBarOk(title: text)
+        let snackbar = LPSnackbarManager.createSnackBar(title: text, leftIconImage: UIImage(named: "ic_t_ok"))
         snackbar.viewToDisplayIn = view
         
         LPSnackbarManager.show(snackBar: snackbar)
@@ -44,7 +44,7 @@ class ViewController: UIViewController {
         var text: String = textfield.text ?? "Example"
         if text.isEmpty { text = "Example" }
         
-        let snackbar = LPSnackbarManager.createSnackBarError(title: text)
+        let snackbar = LPSnackbarManager.createSnackBar(title: text, leftIconImage: UIImage(named: "ic_t_error"))
         snackbar.viewToDisplayIn = view
         
         LPSnackbarManager.show(snackBar: snackbar)

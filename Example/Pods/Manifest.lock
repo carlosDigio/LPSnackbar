@@ -1,5 +1,5 @@
 PODS:
-  - LPSnackbar (4.0.2)
+  - LPSnackbar (4.0.4)
 
 DEPENDENCIES:
   - LPSnackbar (from `../../LPSnackbar`)
@@ -10,7 +10,7 @@ EXTERNAL SOURCES:
     :path: "../../LPSnackbar"
 
 SPEC CHECKSUMS:
-  LPSnackbar: d400e6d288e46a4b675f9ccbd670a8791cecadab
+  LPSnackbar: 1e8a54e5208067234c38a8593e5ffbe3adc2ffee
 
 PODFILE CHECKSUM: 90c7101ae495da66d5b03e3a2450e3f2b66567c0
 

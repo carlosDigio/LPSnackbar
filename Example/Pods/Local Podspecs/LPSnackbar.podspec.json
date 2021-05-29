@@ -1,6 +1,6 @@
 {
   "name": "LPSnackbar",
-  "version": "4.0.2",
+  "version": "4.0.4",
   "swift_versions": "5.3",
   "summary": "A flexible and easy to use Snackbar control for iOS.",
   "description": "Flexible and customizable Android inspired Snackbar control for iOS devices.",
@@ -18,12 +18,18 @@
     "ios": "11.0"
   },
   "source": {
-    "git": "https://github.com/luispadron/LPSnackbar.git",
-    "tag": "v4.0.2"
+    "git": "https://github.com/carlosDigio/LPSnackbar.git",
+    "tag": "v4.0.4"
   },
   "source_files": [
     "src/LPSnackbar",
     "src/LPSnackbar/**/*.{h,m,xib}"
   ],
+  "resources": "src/LPSnackbar/**/*.{png,pdf}",
+  "resource_bundles": {
+    "LPSnackbar": [
+      "src/LPSnackbar/**/*.{xcassets}"
+    ]
+  },
   "swift_version": "5.3"
 }
