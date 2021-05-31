@@ -119,17 +119,19 @@ internal class LPSnackbarView: UIView {
         willSet {
             showRightButton = newValue != nil
             
-            let style = NSMutableParagraphStyle()
-            style.minimumLineHeight = 18
-            style.maximumLineHeight = 18
-            style.lineBreakMode = .byTruncatingTail
-                
-            let attributed = NSAttributedString(string: newValue ?? "",
-                                                attributes: [.font: UIFont.systemFont(ofSize: 16),
-                                                             .foregroundColor: UIColor.orange,
-                                                             .paragraphStyle: style])
-            rightButton?.setAttributedTitle(attributed, for: .normal)
-            rightButton?.sizeToFit()
+            if showRightButton {
+                let style = NSMutableParagraphStyle()
+                style.minimumLineHeight = 18
+                style.maximumLineHeight = 18
+                style.lineBreakMode = .byTruncatingTail
+                    
+                let attributed = NSAttributedString(string: newValue ?? "",
+                                                    attributes: [.font: UIFont.systemFont(ofSize: 16),
+                                                                 .foregroundColor: UIColor.orange,
+                                                                 .paragraphStyle: style])
+                rightButton?.setAttributedTitle(attributed, for: .normal)
+                rightButton?.sizeToFit()
+            }
         }
     }
     

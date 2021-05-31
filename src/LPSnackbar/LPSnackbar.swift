@@ -187,13 +187,15 @@ open class LPSnackbar: NSObject {
             }
         }
         
-        view.layoutSubviews()
+        // Set frame for view
+        let width: CGFloat = superview.bounds.width * widthPercent
+        view.frame = CGRect(x: 0, y: 0, width: width, height: view.frame.height)
+        
         view.setNeedsLayout()
+        view.layoutIfNeeded()
         
-        view.rightButton?.sizeToFit()
         view.titleLabel?.sizeToFit()
-        
-        height = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        view.titleLabel?.preferredMaxLayoutWidth = view.titleLabel?.frame.width ?? 0.0
         
         // Set completion and animate the view if allowed
         self.completion = completion
@@ -284,11 +286,9 @@ open class LPSnackbar: NSObject {
             return .zero
         }
         
-        if recalculate {
-            height = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-        }
-        
         // Set frame for view
+        height = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        
         let width: CGFloat = superview.bounds.width * widthPercent
         let startX: CGFloat = (superview.bounds.width - width) / 2.0
         var startY: CGFloat

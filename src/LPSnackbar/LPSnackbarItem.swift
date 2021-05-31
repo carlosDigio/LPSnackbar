@@ -27,7 +27,7 @@ import UIKit
 
 @objcMembers
 internal class LPSnackbarItem: NSObject {
-    var snackBar: LPSnackbar
+    weak var snackBar: LPSnackbar?
     var displayDuration: TimeInterval
     var animated: Bool
     var isDisplayed: Bool = false
@@ -45,10 +45,10 @@ internal class LPSnackbarItem: NSObject {
     
     func showSnackBar() {
         isDisplayed = true
-        snackBar.show(displayDuration: displayDuration, animated: animated, completion: completion)
+        snackBar?.show(displayDuration: displayDuration, animated: animated, completion: completion)
     }
     
     func checkSnackbarView(_ snackbarView: LPSnackbarView) -> Bool {
-        snackbarView === snackBar.view
+        snackbarView === snackBar?.view
     }
 }
