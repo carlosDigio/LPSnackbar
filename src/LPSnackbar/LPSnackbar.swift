@@ -172,6 +172,9 @@ open class LPSnackbar: NSObject {
             fatalError("Unable to get a superview, was not able to show\n Couldn't add LPSnackbarView as a subview to the main UIWindow")
         }
         
+        // Accesibility
+        print("[AI][LPSnackbar]: \(String(describing: view.accessibilityIdentifier))")
+        
         // Add as subview
         if let belowView = insertBelowView {
             superview.insertSubview(view, belowSubview: belowView)

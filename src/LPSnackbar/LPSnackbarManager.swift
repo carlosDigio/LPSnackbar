@@ -51,7 +51,10 @@ open class LPSnackbarManager: NSObject {
     }
     
     /// Create a custom snackbar with title, button title (optional) and left icon (optional)
-    @objc public static func createSnackBar(title: String, buttonTitle: String? = nil, leftIconImage: UIImage? = nil, delegate: LPSnackbarDelegate? = nil) -> LPSnackbar {
+    @objc public static func createSnackBar(title: String,
+                                            buttonTitle: String? = nil,
+                                            leftIconImage: UIImage? = nil,
+                                            delegate: LPSnackbarDelegate? = nil) -> LPSnackbar {
         let snack = LPSnackbar()
         snack.view.title = title
         snack.view.leftIconimage = leftIconImage
@@ -66,6 +69,7 @@ open class LPSnackbarManager: NSObject {
               displayDuration: TimeInterval = 2.0,
               animated: Bool = true,
               completion: LPSnackbar.SnackbarCompletion? = nil) {
+        snackBar.view.accessibilityIdentifier = "LPSnackbarView.snack_\(shared.snacks.count)"
         shared.snacks.append(LPSnackbarItem(snackBar: snackBar,
                                             displayDuration: displayDuration,
                                             animated: animated,

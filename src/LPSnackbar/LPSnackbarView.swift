@@ -52,9 +52,6 @@ internal class LPSnackbarView: UIView {
     /// The controller for this view
     internal var controller: LPSnackbar?
     
-    /// The amount of padding of the stackview`, default is `16.0`
-    @objc internal var padding: UIEdgeInsets = UIEdgeInsets(top: 16.0, left: 16.0, bottom: 16.0, right: 16.0)
-    
     /// The corner radious of the view, default is `8.0`
     @objc internal var cornerRadius: CGFloat = 8.0
     
@@ -180,7 +177,6 @@ internal class LPSnackbarView: UIView {
         // Accesibility
         isAccessibilityElement = true
         accessibilityLabel = titleLabel?.text
-        accessibilityIdentifier = "LPSnackbarView.snack"
         
         // Customize UI
         backgroundColor = backColor

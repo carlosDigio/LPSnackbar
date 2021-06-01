@@ -27,6 +27,7 @@ class ViewController: UIViewController {
         let snackbar = LPSnackbarManager.createSnackBar(title: text)
         snackbar.viewToDisplayIn = view
 
+        textfield.resignFirstResponder()
         LPSnackbarManager.show(snackBar: snackbar)
     }
     
@@ -37,6 +38,7 @@ class ViewController: UIViewController {
         let snackbar = LPSnackbarManager.createSnackBar(title: text, leftIconImage: UIImage(named: "ic_t_ok"))
         snackbar.viewToDisplayIn = view
         
+        textfield.resignFirstResponder()
         LPSnackbarManager.show(snackBar: snackbar)
     }
     
@@ -47,6 +49,7 @@ class ViewController: UIViewController {
         let snackbar = LPSnackbarManager.createSnackBar(title: text, leftIconImage: UIImage(named: "ic_t_error"))
         snackbar.viewToDisplayIn = view
         
+        textfield.resignFirstResponder()
         LPSnackbarManager.show(snackBar: snackbar)
     }
     
@@ -59,7 +62,8 @@ class ViewController: UIViewController {
                                                         delegate: self)
         snackbar.viewToDisplayIn = view
         snackbar.delegate = self
-        
+
+        textfield.resignFirstResponder()
         LPSnackbarManager.show(snackBar: snackbar)
     }
 }
