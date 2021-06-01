@@ -16,8 +16,8 @@
 	
 	<img src="https://raw.githubusercontent.com/luispadron/LPSnackbar/master/.github/Demo2.gif" width="350"/>  
 
-- Supports iOS 8.0 +
-- Written with the latest Swift (Swift 4)
+- Supports iOS 11.0 +
+- Written with the latest Swift (Swift 5)
 
 ## Installation
 
@@ -48,25 +48,21 @@ Snacks can be simple
 
 ```swift
 // Yes, this simple.
-LPSnackbar.showSnack(title: "I'm a snack!")
+let snackbar = LPSnackbarManager.createSnackBar(title: "I'm a snack!")
+snackbar.viewToDisplayIn = view
+
+LPSnackbarManager.show(snackBar: snackbar)
 ```
 
 Snacks can be customized
 
 ```swift
-let snack = LPSnackbar(title: "Object deleted.", buttonTitle: "UNDO")
-// Customize the snack
-snack.bottomSpacing = (tabBarController?.tabBar.frame.height ?? 0) + 15
-snack.view.titleLabel.font = UIFont.systemFont(ofSize: 20)
+let snackbar = LPSnackbarManager.createSnackBar(title: text, buttonTitle: "Undo", delegate: self)
+snackbar.viewToDisplayIn = view
+snackbar.bottomSpacing = (tabBarController?.tabBar.frame.height ?? 0) + 15
+snackbar.adjustsPositionForSafeArea = false
 
-// Show a snack to allow user to undo deletion
-snack.show(animated: true) { (undone) in
-    if undone {
-		// Undo deletion
-    } else {
-		// Follow through with deletion
-    }
-}
+LPSnackbarManager.show(snackBar: snackbar)
 ```
 
 ## Example

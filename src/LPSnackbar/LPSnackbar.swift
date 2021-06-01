@@ -25,6 +25,10 @@
 
 import UIKit
 
+@objc public protocol LPSnackbarDelegate: AnyObject {
+    func buttonPressed()
+}
+
 /**
  The controller for an `LPSnackbarView`.
 
@@ -37,10 +41,11 @@ open class LPSnackbar: NSObject {
     // MARK: Public Members
 
     /// The `LPSnackbarView` for the controller, access this view and it's subviews to do any additional customization.
-    @objc open lazy var view: LPSnackbarView = {
+    @objc lazy var view: LPSnackbarView = {
         let snackView: LPSnackbarView = LPSnackbarView.fromNib()
         snackView.controller = self
         snackView.isHidden = true
+
         return snackView
     }()
 
@@ -82,11 +87,12 @@ open class LPSnackbar: NSObject {
      The bottom spacing for the `view`.
 
      For example, by default the `view` is placed in the main `UIWindow` of an application with a default
-     bottom spacing of `12.0`, however, if you have a `UITabBarController` you may want to increase the bottom spacing
+     bottom spacing of `16.0`, however, if you have a `UITabBarController` you may want to increase the bottom spacing
      so that the snack is presented above the bar.
      */
     @objc open var bottomSpacing: CGFloat = 16.0 {
         didSet {
+            if bottomSpacing > 16 { bottomSpacing += 16 }
             // Update frame
             self.view.setNeedsLayout()
         }
@@ -100,15 +106,20 @@ open class LPSnackbar: NSObject {
         }
     }
 
-    /**
-     Whether or not the snackbar should adjust to fit within the safe area's of it's parent view.
-
-     Only used in iOS 11.0 +
-     */
+    /// Whether or not the snackbar should adjust to fit within the safe area's of it's parent view. By default this is `false`.
     @objc open var adjustsPositionForSafeArea: Bool = true
 
     /// Optional view to display the `view` in, by default this is `nil`, thus the main `UIWindow` is used for presentation.
     @objc open weak var viewToDisplayIn: UIView?
+    
+    /// Optional index  to display the `view`. By default this is `997`
+    @objc open var viewIndex: Int = 997
+    
+    /// Optional insert below view. ↓ By default this is `nil`
+    @objc open var insertBelowView: UIView?
+    
+    /// Optional insert above view. ↑ By default this is `nil`
+    @objc open var insertAboveView: UIView?
 
     /// The duration for the animation of both the adding and removal of the `view`.
     @objc open var animationDuration: TimeInterval = 0.5
@@ -116,8 +127,13 @@ open class LPSnackbar: NSObject {
     /// Whether or not the snackbar will be show at front or under the view to display in
     @objc open var showUnderViewToDisplayIn: Bool = false
     
+    /// Whether or not the view support gestures to dismiss. By default this is `false`
+    @objc open var allowGestures: Bool = false
+    
     /// The completion block for an `LPSnackbar`, `true` is sent if button was tapped, `false` otherwise.
     public typealias SnackbarCompletion = (Bool) -> Void
+    
+    public weak var delegate: LPSnackbarDelegate?
 
     // MARK: Private Members
 
@@ -147,30 +163,42 @@ open class LPSnackbar: NSObject {
     /**
      Presents the snackView to the screen
      - Parameters:
-     - displayDuration: How long to show the snack for, if `nil`, will show forever. Default = `3.0`
+     - displayDuration: How long to show the snack for, if `nil`, will show forever. Default = `2.0`
      - animated: Whether or not the snack should animate in and out. Default = `true`
      - completion: The completion handler for when the snack is removed/button pressed. Default = `nil`
      */
-    @objc open func show(displayDuration: TimeInterval = 3.0, animated: Bool = true, completion: SnackbarCompletion? = nil) {
+    @objc internal func show(displayDuration: TimeInterval = 2.0, animated: Bool = true, completion: SnackbarCompletion? = nil) {
         guard let superview = viewToDisplayIn ?? UIApplication.shared.keyWindow ?? nil else {
             fatalError("Unable to get a superview, was not able to show\n Couldn't add LPSnackbarView as a subview to the main UIWindow")
         }
         
-        // Add as subview
-        superview.addSubview(view)
+        // Accesibility
+        print("[AI][LPSnackbar]: \(String(describing: view.accessibilityIdentifier))")
         
-        if showUnderViewToDisplayIn {
-            superview.sendSubviewToBack(view)
+        // Add as subview
+        if let belowView = insertBelowView {
+            superview.insertSubview(view, belowSubview: belowView)
+        } else if let aboveView = insertAboveView {
+            superview.insertSubview(view, aboveSubview: aboveView)
+        } else {
+            superview.addSubview(view)
+        
+            if showUnderViewToDisplayIn {
+                superview.sendSubviewToBack(view)
+            } else {
+                superview.bringSubviewToFront(view)
+            }
         }
         
-        view.layoutSubviews()
+        // Set frame for view
+        let width: CGFloat = superview.bounds.width * widthPercent
+        view.frame = CGRect(x: 0, y: 0, width: width, height: view.frame.height)
+        
         view.setNeedsLayout()
+        view.layoutIfNeeded()
         
-        view.rightButton?.sizeToFit()
         view.titleLabel?.sizeToFit()
-        
-        let currentHeight = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-        height = currentHeight < 50 ? 50 : currentHeight
+        view.titleLabel?.preferredMaxLayoutWidth = view.titleLabel?.frame.width ?? 0.0
         
         // Set completion and animate the view if allowed
         self.completion = completion
@@ -197,7 +225,7 @@ open class LPSnackbar: NSObject {
      - `completeWithAction`: Whether or not if when dismissing, you want to pass true to the `SnackbarCompletion`, which
      means that it will act as if the button was pressed by the user.
      */
-    @objc open func dismiss(animated: Bool = true, completeWithAction: Bool = false) {
+    @objc internal func dismiss(animated: Bool = true, completeWithAction: Bool = false) {
         guard !completeWithAction else {
             self.viewButtonTapped()
             return
@@ -227,16 +255,18 @@ open class LPSnackbar: NSObject {
         }
         
         // Add gesture recognizers for swipes
-        let left = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipes(sender:)))
-        left.direction = .left
-        let right = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipes(sender:)))
-        right.direction = .right
-        let down = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipes(sender:)))
-        down.direction = .down
-        
-        view.addGestureRecognizer(left)
-        view.addGestureRecognizer(right)
-        view.addGestureRecognizer(down)
+        if allowGestures {
+            let left = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipes(sender:)))
+            left.direction = .left
+            let right = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipes(sender:)))
+            right.direction = .right
+            let down = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipes(sender:)))
+            down.direction = .down
+
+            view.addGestureRecognizer(left)
+            view.addGestureRecognizer(right)
+            view.addGestureRecognizer(down)
+        }
         
         // Register for snack removal notifications
         NotificationCenter.default.addObserver(self, selector: #selector(self.snackWasRemoved(notification:)),
@@ -254,15 +284,17 @@ open class LPSnackbar: NSObject {
     // MARK: Helper Methods
     
     /// Returns the calculated/appropriate frame for the view, takes into account whether there are multiple snacks on the view.
-    @objc open func frameForView(fromBottom: Bool = false) -> CGRect {
+    @objc internal func frameForView(fromBottom: Bool = false, recalculate: Bool = false) -> CGRect {
         guard let superview = viewToDisplayIn ?? UIApplication.shared.keyWindow ?? nil else {
             return .zero
         }
         
         // Set frame for view
+        height = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        
         let width: CGFloat = superview.bounds.width * widthPercent
         let startX: CGFloat = (superview.bounds.width - width) / 2.0
-        let startY: CGFloat
+        var startY: CGFloat
         
         // Check to see if a snackbar is already being presented in this view
         var snackView: LPSnackbarView?
@@ -272,7 +304,7 @@ open class LPSnackbar: NSObject {
                     break
                 }
             } else if sub is LPSnackbarView {
-                view.layer.zPosition = CGFloat(1000 - (index + 1))
+                view.layer.zPosition = CGFloat(viewIndex - (index + 1))
             }
             // Loop until we find the last snack view, since it should be the last one displayed in the superview
             // and the snack view should be below the current snack view
@@ -284,8 +316,12 @@ open class LPSnackbar: NSObject {
         if let snack = snackView {
             startY = snack.frame.maxY - snack.frame.height - height - stackedBottomSpacing
         } else {
-            view.layer.zPosition = 1000
-            startY = superview.bounds.maxY - height - bottomSpacing - superview.safeAreaInsets.bottom
+            view.layer.zPosition = CGFloat(viewIndex)
+            startY = superview.bounds.maxY - height - bottomSpacing
+            
+            if adjustsPositionForSafeArea {
+                startY -= superview.safeAreaInsets.bottom
+            }
         }
         
         return CGRect(x: startX, y: startY, width: width, height: height)
@@ -298,10 +334,12 @@ open class LPSnackbar: NSObject {
         let frame = frameForView()
         let inY = frame.origin.y
         let outY = frame.origin.y + height + bottomSpacing
+        
         // Set up view outside the frame, then animate it back in
         view.isHidden = false
         view.layer.opacity = 0.0
         view.frame = CGRect(x: frame.origin.x, y: outY, width: frame.width, height: frame.height)
+        
         UIView.animate(
             withDuration: animationDuration,
             delay: 0.1,
@@ -320,13 +358,12 @@ open class LPSnackbar: NSObject {
     /// Animates the view in by moving down towards the edge of the screen and fading it out
     private func animateOut(wasButtonTapped: Bool = false) {
         let frame = view.frame
-        let outY = frame.origin.y + height + bottomSpacing
-        let pos = CGPoint(x: frame.origin.x, y: outY)
+        let outY = frame.origin.y + height + bottomSpacing + (view.superview?.safeAreaInsets.bottom ?? 0.0)
 
         UIView.animate(
             withDuration: animationDuration,
             animations: {
-                self.view.frame = CGRect(origin: pos, size: frame.size)
+                self.view.frame.origin.y = outY
                 self.view.layer.opacity = 0.0
         }, completion: { _ in
             // Call the completion handler
@@ -387,6 +424,8 @@ open class LPSnackbar: NSObject {
             // Remove snack
             self.removeSnack()
         }
+        // Call buttonPressed delegate
+        delegate?.buttonPressed()
     }
 
     /// Called when another `LPSnackbarView` was removed from the screen. Refreshes the frame of the current `LPSnackbarView`.
@@ -439,4 +478,3 @@ open class LPSnackbar: NSObject {
         view.removeFromSuperview()
     }
 }
-

@@ -26,7 +26,7 @@
 import UIKit
 
 /// The `Notification.Name` for when a `LPSnackbarView` has been removed from it's superview.
-internal let snackRemoval: Notification.Name = Notification.Name(rawValue: "com.lpSnackbar.removalNotification")
+internal let snackRemoval: Notification.Name = Notification.Name(rawValue: "com.lpsnackbar.removalNotification")
 
 /**
  The `LPSnackbarView` which contains 3 subviews.
@@ -36,7 +36,7 @@ internal let snackRemoval: Notification.Name = Notification.Name(rawValue: "com.
 
  */
 @objcMembers
-open class LPSnackbarView: UIView {
+internal class LPSnackbarView: UIView {
     
     // MARK: IBOutlet
     
@@ -52,102 +52,90 @@ open class LPSnackbarView: UIView {
     /// The controller for this view
     internal var controller: LPSnackbar?
     
-    /// The amount of padding of the stackview`, default is `16.0`
-    @objc open var padding: UIEdgeInsets = UIEdgeInsets(top: 16.0, left: 16.0, bottom: 16.0, right: 16.0)
-    
     /// The corner radious of the view, default is `8.0`
-    @objc open var cornerRadius: CGFloat = 8.0
+    @objc internal var cornerRadius: CGFloat = 8.0
     
     /// The backgroundColor of the view, default is `UIColor(red: 44 / 255, green: 44 / 255, blue: 45 / 255, alpha: 1.00)`
-    @objc open var backColor: UIColor = UIColor(red: 44 / 255, green: 44 / 255, blue: 45 / 255, alpha: 1.00)
+    @objc internal var backColor: UIColor = UIColor(red: 44 / 255, green: 44 / 255, blue: 45 / 255, alpha: 1.00)
     
     /// The (attributed) title text
-    @objc open var title: String? {
-        didSet {
+    @objc internal var title: String? {
+        willSet {
             let style = NSMutableParagraphStyle()
             style.minimumLineHeight = 18
             style.maximumLineHeight = 18
             style.lineBreakMode = .byTruncatingTail
-            titleLabel?.attributedText = NSAttributedString(string: title ?? "",
+            titleLabel?.attributedText = NSAttributedString(string: newValue ?? "",
                                                             attributes: [.font: UIFont.systemFont(ofSize: 16),
                                                                          .foregroundColor: UIColor.white,
                                                                          .paragraphStyle: style])
+            titleLabel?.sizeToFit()
         }
     }
     
     /// The title color, default is `white`
-    @objc open var titleColor: UIColor = UIColor.white {
-        didSet {
-            titleLabel?.textColor = titleColor
+    @objc internal var titleColor: UIColor = UIColor.white {
+        willSet {
+            titleLabel?.textColor = newValue
         }
     }
     
     /// The button color, default is `white`
-    @objc open var buttonColor: UIColor = UIColor.white {
-        didSet {
-            rightButton?.setTitleColor(buttonColor, for: .normal)
+    @objc internal var buttonColor: UIColor = UIColor.white {
+        willSet {
+            rightButton?.setTitleColor(newValue, for: .normal)
         }
     }
     
     /// Show shadow or not.. Default is `false`
-    @objc open var showShadow: Bool = false {
-        didSet {
-            layer.shadowColor = showShadow ? UIColor.black.cgColor : UIColor.clear.cgColor
+    @objc internal var showShadow: Bool = false {
+        willSet {
+            layer.shadowColor = newValue ? UIColor.black.cgColor : UIColor.clear.cgColor
             layer.shadowRadius = 5.0
             layer.shadowOpacity = 0.4
         }
     }
     
     /// Show fef iIcon. Default is `false`
-    @objc open var showLeftIcon: Bool = false {
-        didSet {
-            leftIconView?.isHidden = !showLeftIcon
-            if !showLeftIcon {
-                if stackView.arrangedSubviews.contains(leftIconView) {
-                    stackView.removeArrangedSubview(leftIconView)
-                }
-            } else if !stackView.arrangedSubviews.contains(leftIconView) {
-                stackView.insertArrangedSubview(leftIconView, at: 0)
-            }
+    @objc internal var showLeftIcon: Bool = false {
+        willSet {
+            leftIconView?.isHidden = !newValue
         }
     }
     
     /// The left icon image. Default is `nil`
-    @objc open var leftIconimage: UIImage? = nil {
-        didSet {
-            leftIconImageView?.image = leftIconimage
-            showLeftIcon = leftIconimage != nil
+    @objc internal var leftIconimage: UIImage? = nil {
+        willSet {
+            leftIconImageView?.image = newValue
+            showLeftIcon = newValue != nil
         }
     }
     
     /// The (attributed) button title text
-    @objc open var buttonTitle: String? {
-        didSet {
-            let style = NSMutableParagraphStyle()
-            style.minimumLineHeight = 18
-            style.maximumLineHeight = 18
-            style.lineBreakMode = .byTruncatingTail
-                
-            let attributed = NSAttributedString(string: buttonTitle ?? "",
-                                                attributes: [.font: UIFont.systemFont(ofSize: 16),
-                                                             .foregroundColor: UIColor.orange,
-                                                             .paragraphStyle: style])
-            rightButton?.setAttributedTitle(attributed, for: .normal)
-            showRightButton = buttonTitle != nil
+    @objc internal var buttonTitle: String? {
+        willSet {
+            showRightButton = newValue != nil
+            
+            if showRightButton {
+                let style = NSMutableParagraphStyle()
+                style.minimumLineHeight = 18
+                style.maximumLineHeight = 18
+                style.lineBreakMode = .byTruncatingTail
+                    
+                let attributed = NSAttributedString(string: newValue ?? "",
+                                                    attributes: [.font: UIFont.systemFont(ofSize: 16),
+                                                                 .foregroundColor: UIColor.orange,
+                                                                 .paragraphStyle: style])
+                rightButton?.setAttributedTitle(attributed, for: .normal)
+                rightButton?.sizeToFit()
+            }
         }
     }
     
     /// Show right button. Default is `false`
-    @objc open var showRightButton: Bool = false {
-        didSet {
-            buttonView?.isHidden = !showRightButton
-            if !showRightButton {
-                if stackView.arrangedSubviews.contains(buttonView) {
-                    stackView.removeArrangedSubview(buttonView)
-                }
-            } else if !stackView.arrangedSubviews.contains(buttonView) {
-                stackView.addArrangedSubview(buttonView)
-            }
+    @objc internal var showRightButton: Bool = false {
+        willSet {
+            buttonView?.isHidden = !newValue
         }
     }
     
@@ -169,20 +157,17 @@ open class LPSnackbarView: UIView {
     }
     
     /// Overriden, posts `snackRemoval` notification.
-    open override func removeFromSuperview() {
+    internal override func removeFromSuperview() {
         super.removeFromSuperview()
         // Will be removed from superview, post notification
         let notification = Notification(name: snackRemoval, object: self)
         NotificationCenter.default.post(notification)
     }
     
-    open override func didMoveToWindow() {
+    internal override func didMoveToWindow() {
         super.didMoveToWindow()
         
         rightButton?.addTarget(self, action: #selector(self.buttonTapped(sender:)), for: .touchUpInside)
-        
-        stackView?.layoutMargins = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
-        stackView.isLayoutMarginsRelativeArrangement = true
     }
     
     // MARK: Private methods
@@ -192,7 +177,6 @@ open class LPSnackbarView: UIView {
         // Accesibility
         isAccessibilityElement = true
         accessibilityLabel = titleLabel?.text
-        accessibilityIdentifier = "LPSnackbarView.snack"
         
         // Customize UI
         backgroundColor = backColor
@@ -212,7 +196,7 @@ open class LPSnackbarView: UIView {
         // Layout the view/subviews again
         DispatchQueue.main.async {
             // Set frame for self
-            self.frame = self.controller?.frameForView() ?? .zero
+            self.frame = self.controller?.frameForView(recalculate: true) ?? .zero
         }
     }
     

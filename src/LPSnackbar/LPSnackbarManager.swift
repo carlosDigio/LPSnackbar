@@ -26,16 +26,16 @@
 import UIKit
 
 /**
- The manager for an `LPSnackbar`.
+ The main manager  of `LPSnackbar`.
  
- This class handles everything that has to do with showing, dismissing and performing actions in a `LPSnackbar`.
+ This handles everything that has to do with showing, dismissing and performing actions in a `LPSnackbar`.
  */
 @objc
 open class LPSnackbarManager: NSObject {
-    @objc public static let shared: LPSnackbarManager = LPSnackbarManager()
+    @objc static let shared: LPSnackbarManager = LPSnackbarManager()
     
-    /// Max number of snacks allowed in the stack
-    @objc open var maxSnacks: Int = 3
+    /// Max number of snacks allowed at the same time. Default is `3`
+    @objc public var maxSnacks: Int = 3
     
     private var snacks: [LPSnackbarItem] = []
     
@@ -50,47 +50,46 @@ open class LPSnackbarManager: NSObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    
-    @objc open func createSnackBarOk(title: String) -> LPSnackbar {
-        createSnackBar(title: title, leftIconImage: UIImage(named: "ic_t_ok"))
-    }
-    
-    @objc open func createSnackBarError(title: String) -> LPSnackbar {
-        createSnackBar(title: title, leftIconImage: UIImage(named: "ic_t_error"))
-    }
-    
-    @objc open func createSnackBar(title: String, buttonTitle: String? = nil, leftIconImage: UIImage? = nil) -> LPSnackbar {
+    /// Create a custom snackbar with title, button title (optional) and left icon (optional)
+    @objc public static func createSnackBar(title: String,
+                                            buttonTitle: String? = nil,
+                                            leftIconImage: UIImage? = nil,
+                                            delegate: LPSnackbarDelegate? = nil) -> LPSnackbar {
         let snack = LPSnackbar()
         snack.view.title = title
         snack.view.leftIconimage = leftIconImage
         snack.view.buttonTitle = buttonTitle
+        snack.delegate = delegate
         
         return snack
     }
     
-    @objc open func show(snackBar: LPSnackbar,
+    /// Shows a snackbar with displayDuration, animated and completion block
+    @objc public static func show(snackBar: LPSnackbar,
               displayDuration: TimeInterval = 2.0,
               animated: Bool = true,
               completion: LPSnackbar.SnackbarCompletion? = nil) {
-        snacks.append(LPSnackbarItem(snackBar: snackBar,
-                                     displayDuration: displayDuration,
-                                     animated: animated,
-                                     completion: completion))
+        snackBar.view.accessibilityIdentifier = "LPSnackbarView.snack_\(shared.snacks.count)"
+        shared.snacks.append(LPSnackbarItem(snackBar: snackBar,
+                                            displayDuration: displayDuration,
+                                            animated: animated,
+                                            completion: completion))
         presentNextSnack()
     }
     
-    @objc open func resetSnacks() {
-        snacks.removeAll()
+    /// Resets current snacks array
+    @objc public static func resetSnacks() {
+        shared.snacks.removeAll()
     }
     
     @objc private func snackWasRemoved(notification: Notification) {
         guard let snackbarView = notification.object as? LPSnackbarView else { return }
-        snacks.removeAll(where: { $0.checkSnackbarView(snackbarView) })
-        presentNextSnack()
+        LPSnackbarManager.shared.snacks.removeAll(where: { $0.checkSnackbarView(snackbarView) })
+        LPSnackbarManager.presentNextSnack()
     }
     
-    private func presentNextSnack() {
-        if snacks.filter({ $0.isDisplayed }).count >= maxSnacks { return }
-        snacks.filter({ !$0.isDisplayed }).prefix(maxSnacks).forEach({ $0.showSnackBar() })
+    private class func presentNextSnack() {
+        if shared.snacks.filter({ $0.isDisplayed }).count >= shared.maxSnacks { return }
+        shared.snacks.filter({ !$0.isDisplayed }).prefix(shared.maxSnacks).forEach({ $0.showSnackBar() })
     }
 }

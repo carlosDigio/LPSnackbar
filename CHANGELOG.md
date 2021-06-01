@@ -1,5 +1,9 @@
 # LPSnackbar CHANGELOG
 
+## Version 4.1.0
+
+- New LPSnackManager
+
 ## Version 3.1.0
 
 - Build with Swift 5.0
