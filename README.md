@@ -2,19 +2,18 @@
 
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/carlosDigio/LPSnackbar/master/.github/Screen2.png"/>  
+<img src="https://raw.githubusercontent.com/carlosDigio/LPSnackbar/master/.github/Screen2.jpg"/>  
 </p>
 
 ## Features 
 
 - Flexible, easy to use and customizable.
 - _Snacks_ are stackable and swipeable.
-- _Snacks_ are actionable.
-	
-	<img src="https://raw.githubusercontent.com/carlosDigio/LPSnackbar/master/.github/Screen3.jpg" width="350"/>  
-
+- _Snacks_ are actionable.  
 - Supports iOS 11.0 +
 - Written with the latest Swift (Swift 5)
+
+<img src="https://raw.githubusercontent.com/carlosDigio/LPSnackbar/master/.github/Screen3.jpg" width="350"/>
 
 ## Installation
 
