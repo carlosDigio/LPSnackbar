@@ -2,19 +2,16 @@
 
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/luispadron/LPSnackbar/master/.github/Screen1.png"/>  
+<img src="https://raw.githubusercontent.com/carlosDigio/LPSnackbar/master/.github/Screen2.png"/>  
 </p>
 
 ## Features 
 
 - Flexible, easy to use and customizable.
+- _Snacks_ are stackable and swipeable.
 - _Snacks_ are actionable.
 	
-	<img src="https://raw.githubusercontent.com/luispadron/LPSnackbar/master/.github/Demo1.gif" width="350"/>  
-	
-- _Snacks_ are stackable and swipeable.
-	
-	<img src="https://raw.githubusercontent.com/luispadron/LPSnackbar/master/.github/Demo2.gif" width="350"/>  
+	<img src="https://raw.githubusercontent.com/carlosDigio/LPSnackbar/master/.github/Screen3.jpg" width="350"/>  
 
 - Supports iOS 11.0 +
 - Written with the latest Swift (Swift 5)
@@ -39,7 +36,7 @@
 
 ### From Source
 
-1. Simply download the source from [here](https://github.com/luispadron/LPSnackbar/tree/master/LPSnackbar) and add it to your Xcode project.
+1. Simply download the source from [here](https://github.com/carlosDigio/LPSnackbar/tree/master/LPSnackbar) and add it to your Xcode project.
 
 
 ## Usage
@@ -59,7 +56,7 @@ Snacks can be customized
 ```swift
 let snackbar = LPSnackbarManager.createSnackBar(title: text, buttonTitle: "Undo", delegate: self)
 snackbar.viewToDisplayIn = view
-snackbar.bottomSpacing = (tabBarController?.tabBar.frame.height ?? 0) + 15
+snackbar.bottomSpacing = (tabBarController?.tabBar.frame.height ?? 0) + 12
 snackbar.adjustsPositionForSafeArea = false
 
 LPSnackbarManager.show(snackBar: snackbar)

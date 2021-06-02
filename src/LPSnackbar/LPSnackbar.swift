@@ -138,7 +138,13 @@ open class LPSnackbar: NSObject {
     // MARK: Private Members
 
     /// The timer responsible for notifying about when the view needs to be removed.
-    private var displayTimer: Timer?
+    private var displayTimer: Timer? {
+        willSet {
+            if let timer = newValue {
+                RunLoop.main.add(timer, forMode: .common)
+            }
+        }
+    }
 
     /// Whether or not the view was initially animated, this is used when animating out the view.
     private var wasAnimated: Bool = false
