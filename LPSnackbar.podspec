@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "LPSnackbar"
-  s.version      = "4.1.2"
+  s.version      = "4.1.3"
   s.swift_version = "5.3"
   s.summary      = "A flexible and easy to use Snackbar control for iOS."
 

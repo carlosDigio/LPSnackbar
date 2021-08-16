@@ -1,5 +1,9 @@
 # LPSnackbar CHANGELOG
 
+## Version 4.1.3
+
+- Return a default identifier for LPSnackBar
+
 ## Version 4.1.2
 
 - Return LPSnackBar target in delegate
