@@ -41,13 +41,7 @@ open class LPSnackbar: NSObject {
     // MARK: Public Members
 
     /// Optional identifier. By default is generated using UUID
-    @objc open var identifier: String? {
-        didSet {
-            if let id = identifier {
-                self.view.identifier = id
-            }
-        }
-    }
+    @objc open var identifier: String = UUID().uuidString
     
     /// The `LPSnackbarView` for the controller, access this view and it's subviews to do any additional customization.
     @objc lazy var view: LPSnackbarView = {
@@ -440,7 +434,7 @@ open class LPSnackbar: NSObject {
             self.removeSnack()
         }
         // Call buttonPressed delegate
-        delegate?.snackBar(self, didPressedWith: view.identifier)
+        delegate?.snackBar(self, didPressedWith: identifier)
     }
 
     /// Called when another `LPSnackbarView` was removed from the screen. Refreshes the frame of the current `LPSnackbarView`.

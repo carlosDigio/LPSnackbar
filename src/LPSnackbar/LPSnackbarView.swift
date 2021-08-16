@@ -49,9 +49,6 @@ internal class LPSnackbarView: UIView {
     
     // MARK: Properties
     
-    /// The identifier for this view
-    internal var identifier: String = UUID().uuidString
-    
     /// The controller for this view
     internal var controller: LPSnackbar?
     
