@@ -26,6 +26,10 @@
 import UIKit
 
 @objc public protocol LPSnackbarDelegate: AnyObject {
+    func snackBar(_ snackBar: LPSnackbar, willShowWith identifier: String)
+    func snackBar(_ snackBar: LPSnackbar, didShowWith identifier: String)
+    func snackBar(_ snackBar: LPSnackbar, willHideWith identifier: String)
+    func snackBar(_ snackBar: LPSnackbar, didHideWith identifier: String)
     func snackBar(_ snackBar: LPSnackbar, didPressedWith identifier: String)
 }
 
@@ -184,6 +188,8 @@ open class LPSnackbar: NSObject {
         // Accesibility
         print("[AI][LPSnackbar]: \(String(describing: view.accessibilityIdentifier))")
         
+        delegate?.snackBar(self, willShowWith: identifier)
+        
         // Add as subview
         if let belowView = insertBelowView {
             superview.insertSubview(view, belowSubview: belowView)
@@ -223,6 +229,7 @@ open class LPSnackbar: NSObject {
             animateIn()
         } else {
             view.isHidden = false
+            delegate?.snackBar(self, didShowWith: identifier)
         }
     }
     
@@ -239,6 +246,8 @@ open class LPSnackbar: NSObject {
             self.viewButtonTapped()
             return
         }
+        
+        delegate?.snackBar(self, willHideWith: identifier)
         
         // Invalidate timer
         displayTimer?.invalidate()
@@ -288,6 +297,8 @@ open class LPSnackbar: NSObject {
         
         displayTimer?.invalidate()
         displayTimer = nil
+        
+        delegate?.snackBar(self, didHideWith: identifier)
     }
     
     // MARK: Helper Methods
@@ -357,8 +368,12 @@ open class LPSnackbar: NSObject {
                 self.view.layer.opacity = self.view.defaultOpacity
                 self.view.frame = CGRect(x: frame.origin.x, y: inY, width: frame.width, height: frame.height)
             }, completion: { [weak self] _ in
-                UIAccessibility.post(notification: .announcement, argument: self?.view.title ?? "")
-                self?.accessibilityActivate()
+                guard let `self` = self else { return }
+                
+                UIAccessibility.post(notification: .announcement, argument: self.view.title ?? "")
+                self.accessibilityActivate()
+                
+                self.delegate?.snackBar(self, didShowWith: self.identifier)
             })
 
         wasAnimated = true
@@ -374,9 +389,15 @@ open class LPSnackbar: NSObject {
             animations: {
                 self.view.frame.origin.y = outY
                 self.view.layer.opacity = 0.0
-        }, completion: { _ in
+        }, completion: { [weak self] _ in
+            guard let `self` = self else { return }
+            
             // Call the completion handler
             self.completion?(wasButtonTapped)
+            // Call buttonPressed delegate
+            if wasButtonTapped {
+                self.delegate?.snackBar(self, didPressedWith: self.identifier)
+            }
             // Remove view
             self.removeSnack()
         })
@@ -384,6 +405,8 @@ open class LPSnackbar: NSObject {
 
     /// Animates the swipe of a view by moving it to a specified position
     private func animateSwipeOut(to position: CGPoint) {
+        delegate?.snackBar(self, willHideWith: identifier)
+        
         // Invalidate timer
         displayTimer?.invalidate()
         displayTimer = nil
@@ -420,21 +443,25 @@ open class LPSnackbar: NSObject {
 
     /// Called whenever the `views`'s button is tapped, will animate the view out if allowed
     internal func viewButtonTapped() {
+        delegate?.snackBar(self, willHideWith: identifier)
+        
         // If timer is active, invalidate since view will now dissapear no matter what
         displayTimer?.invalidate()
         displayTimer = nil
-
+        
         if wasAnimated {
             // Animate the view out, which will in turn call the completion handler
-            self.animateOut(wasButtonTapped: true)
+            animateOut(wasButtonTapped: true)
         } else {
             // Call the completion handler, since no animation will be shown
             completion?(true)
+            
+            // Call buttonPressed delegate
+            delegate?.snackBar(self, didPressedWith: identifier)
+            
             // Remove snack
-            self.removeSnack()
+            removeSnack()
         }
-        // Call buttonPressed delegate
-        delegate?.snackBar(self, didPressedWith: identifier)
     }
 
     /// Called when another `LPSnackbarView` was removed from the screen. Refreshes the frame of the current `LPSnackbarView`.
