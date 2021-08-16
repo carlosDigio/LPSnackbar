@@ -1,5 +1,9 @@
 # LPSnackbar CHANGELOG
 
+## Version 4.1.4
+
+- Added more methods to delegate (will/did show, will/did hide)
+
 ## Version 4.1.3
 
 - Return a default identifier for LPSnackBar
