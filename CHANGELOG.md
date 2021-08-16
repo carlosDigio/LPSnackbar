@@ -1,5 +1,9 @@
 # LPSnackbar CHANGELOG
 
+## Version 4.1.2
+
+- Return LPSnackBar target in delegate
+
 ## Version 4.1.0
 
 - New LPSnackManager
