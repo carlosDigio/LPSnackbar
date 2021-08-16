@@ -26,7 +26,7 @@
 import UIKit
 
 @objc public protocol LPSnackbarDelegate: AnyObject {
-    func buttonPressed()
+    func snackBar(_ snackBar: LPSnackbar, didPressedWith identifier: String)
 }
 
 /**
@@ -40,6 +40,15 @@ import UIKit
 open class LPSnackbar: NSObject {
     // MARK: Public Members
 
+    /// Optional identifier. By default is generated using UUID
+    @objc open var identifier: String? {
+        didSet {
+            if let id = identifier {
+                self.view.identifier = id
+            }
+        }
+    }
+    
     /// The `LPSnackbarView` for the controller, access this view and it's subviews to do any additional customization.
     @objc lazy var view: LPSnackbarView = {
         let snackView: LPSnackbarView = LPSnackbarView.fromNib()
@@ -431,7 +440,7 @@ open class LPSnackbar: NSObject {
             self.removeSnack()
         }
         // Call buttonPressed delegate
-        delegate?.buttonPressed()
+        delegate?.snackBar(self, didPressedWith: view.identifier)
     }
 
     /// Called when another `LPSnackbarView` was removed from the screen. Refreshes the frame of the current `LPSnackbarView`.
