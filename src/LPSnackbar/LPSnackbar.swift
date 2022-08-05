@@ -81,7 +81,7 @@ open class LPSnackbar: NSObject {
 
      Do not set the frame of the `view` yourself. Instead set the `widthPercent` and `height`.
      Setting the frame for `view` can have unexpected results as the frame is calculated in a different way depending
-     on many variables.
+     on many variables.  Default value `50.0`.
      */
     @objc open var height: CGFloat = 50.0 {
         didSet {
@@ -119,7 +119,7 @@ open class LPSnackbar: NSObject {
     /// Optional view to display the `view` in, by default this is `nil`, thus the main `UIWindow` is used for presentation.
     @objc open weak var viewToDisplayIn: UIView?
     
-    /// Optional index  to display the `view`. By default this is `997`
+    /// Optional index  to display the `view`. By default is `997`
     @objc open var viewIndex: Int = 997
     
     /// Optional insert below view. ↓ By default this is `nil`

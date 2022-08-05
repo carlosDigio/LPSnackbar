@@ -37,6 +37,9 @@ open class LPSnackbarManager: NSObject {
     /// Max number of snacks allowed at the same time. Default is `3`
     @objc public var maxSnacks: Int = 3
     
+    /// Allow duplicated snacks. Default is `true`
+    @objc public var allowDuplicates: Bool = true
+    
     private var snacks: [LPSnackbarItem] = []
     
     @objc public override init() {
@@ -66,14 +69,16 @@ open class LPSnackbarManager: NSObject {
     
     /// Shows a snackbar with displayDuration, animated and completion block
     @objc public static func show(snackBar: LPSnackbar,
-              displayDuration: TimeInterval = 2.0,
-              animated: Bool = true,
-              completion: LPSnackbar.SnackbarCompletion? = nil) {
+                                  displayDuration: TimeInterval = 2.0,
+                                  animated: Bool = true,
+                                  allowDuplicates: Bool = true,
+                                  completion: LPSnackbar.SnackbarCompletion? = nil) {
         snackBar.view.accessibilityIdentifier = "LPSnackbarView.snack_\(shared.snacks.count)"
-        shared.snacks.append(LPSnackbarItem(snackBar: snackBar,
-                                            displayDuration: displayDuration,
-                                            animated: animated,
-                                            completion: completion))
+        shared.snacks.appendIfUnique(LPSnackbarItem(snackBar: snackBar,
+                                                    displayDuration: displayDuration,
+                                                    animated: animated,
+                                                    allowDuplicates: allowDuplicates,
+                                                    completion: completion), allowDuplicates: shared.allowDuplicates)
         presentNextSnack()
     }
     
@@ -91,5 +96,15 @@ open class LPSnackbarManager: NSObject {
     private class func presentNextSnack() {
         if shared.snacks.filter({ $0.isDisplayed }).count >= shared.maxSnacks { return }
         shared.snacks.filter({ !$0.isDisplayed }).prefix(shared.maxSnacks).forEach({ $0.showSnackBar() })
+    }
+}
+
+internal extension Array where Element == LPSnackbarItem {
+    mutating func appendIfUnique(_ item: LPSnackbarItem, allowDuplicates: Bool = true) {
+        guard item.allowDuplicates, allowDuplicates else {
+            if !contains(where: { $0 == item }) { append(item) }
+            return
+        }
+        append(item)
     }
 }
