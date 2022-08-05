@@ -1,5 +1,9 @@
 # LPSnackbar CHANGELOG
 
+## Version 4.1.5
+
+- Added snackbar allowDuplicates 
+
 ## Version 4.1.4
 
 - Added more methods to delegate (will/did show, will/did hide)
