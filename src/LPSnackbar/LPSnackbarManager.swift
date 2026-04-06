@@ -57,11 +57,13 @@ open class LPSnackbarManager: NSObject {
     @objc public static func createSnackBar(title: String,
                                             buttonTitle: String? = nil,
                                             leftIconImage: UIImage? = nil,
+											useGlassEffect: Bool = true,
                                             delegate: LPSnackbarDelegate? = nil) -> LPSnackbar {
         let snack = LPSnackbar()
         snack.view.title = title
         snack.view.leftIconimage = leftIconImage
         snack.view.buttonTitle = buttonTitle
+		snack.view.useGlassEffect = useGlassEffect
         snack.delegate = delegate
         
         return snack

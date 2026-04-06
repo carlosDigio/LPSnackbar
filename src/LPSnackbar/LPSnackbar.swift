@@ -62,13 +62,13 @@ open class LPSnackbar: NSObject {
      ## Important
 
      This should only be a value between `0.0` and `1.0`. If this value is set past this range, the value
-     will be reset to the default value of `0.98`.
+     will be reset to the default value of `0.95`.
      */
-    @objc open var widthPercent: CGFloat = 0.98 {
+    @objc open var widthPercent: CGFloat = 0.95 {
         didSet {
             // Clamp at between the range
             if self.widthPercent < 0.0 || self.widthPercent > 1.0 {
-                self.widthPercent = 0.98
+                self.widthPercent = 0.95
             }
             self.view.setNeedsLayout()
         }

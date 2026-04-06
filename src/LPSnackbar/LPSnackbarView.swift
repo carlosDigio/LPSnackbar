@@ -110,6 +110,21 @@ internal class LPSnackbarView: UIView {
             showLeftIcon = newValue != nil
         }
     }
+	
+	/// Use useGlassEffect. Default is `false`
+	@objc internal var useGlassEffect: Bool = false {
+		didSet {
+			glassEffectView?.removeFromSuperview()
+			if useGlassEffect {
+				guard let glassEffectView else { return }
+				addSubview(glassEffectView)
+				sendSubviewToBack(glassEffectView)
+				
+				glassEffectView.frame = frame
+			}
+			backgroundColor = useGlassEffect ? nil : backColor
+		}
+	}
     
     /// The (attributed) button title text
     @objc internal var buttonTitle: String? {
@@ -142,6 +157,23 @@ internal class LPSnackbarView: UIView {
     /// The default opacity for the view
     internal let defaultOpacity: Float = 1.0
     
+	/// UIGlassEffect (iOS 26.x)
+	private lazy var glassEffectView: UIVisualEffectView? = {
+		guard useGlassEffect else { return nil }
+		let effectView = UIVisualEffectView()
+		
+		if #available(iOS 26, *) {
+			let glassEffect = UIGlassEffect(style: .regular)
+			effectView.effect = glassEffect
+			effectView.cornerConfiguration = .corners(radius: .fixed(cornerRadius * 2))
+		} else {
+			let glassEffect = UIBlurEffect(style: .dark)
+			effectView.effect = glassEffect
+			effectView.layer.cornerRadius = cornerRadius
+		}
+		return effectView
+	}()
+	
     // MARK: Overrides
     
     /// Overriden
@@ -169,6 +201,11 @@ internal class LPSnackbarView: UIView {
         
         rightButton?.addTarget(self, action: #selector(self.buttonTapped(sender:)), for: .touchUpInside)
     }
+	
+	override func layoutIfNeeded() {
+		super.layoutIfNeeded()
+		glassEffectView?.frame = frame
+	}
     
     // MARK: Private methods
     
@@ -179,7 +216,7 @@ internal class LPSnackbarView: UIView {
         accessibilityLabel = titleLabel?.text
         
         // Customize UI
-        backgroundColor = backColor
+		backgroundColor = useGlassEffect ? nil : backColor
         
         layer.opacity = defaultOpacity
         layer.cornerRadius = cornerRadius
