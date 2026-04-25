@@ -120,7 +120,7 @@ internal class LPSnackbarView: UIView {
 				addSubview(glassEffectView)
 				sendSubviewToBack(glassEffectView)
 				
-				glassEffectView.frame = frame
+				glassEffectView.frame = bounds
 			}
 			backgroundColor = useGlassEffect ? nil : backColor
 		}
@@ -202,9 +202,9 @@ internal class LPSnackbarView: UIView {
         rightButton?.addTarget(self, action: #selector(self.buttonTapped(sender:)), for: .touchUpInside)
     }
 	
-	override func layoutIfNeeded() {
-		super.layoutIfNeeded()
-		glassEffectView?.frame = frame
+	override func layoutSubviews() {
+		super.layoutSubviews()
+		glassEffectView?.frame = bounds
 	}
     
     // MARK: Private methods

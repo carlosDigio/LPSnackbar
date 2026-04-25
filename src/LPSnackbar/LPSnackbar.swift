@@ -99,7 +99,6 @@ open class LPSnackbar: NSObject {
      */
     @objc open var bottomSpacing: CGFloat = 16.0 {
         didSet {
-            if bottomSpacing > 16 { bottomSpacing += 16 }
             // Update frame
             self.view.setNeedsLayout()
         }
@@ -114,13 +113,13 @@ open class LPSnackbar: NSObject {
     }
 
     /// Whether or not the snackbar should adjust to fit within the safe area's of it's parent view. By default this is `false`.
-    @objc open var adjustsPositionForSafeArea: Bool = true
+    @objc open var adjustsPositionForSafeArea: Bool = false
 
     /// Optional view to display the `view` in, by default this is `nil`, thus the main `UIWindow` is used for presentation.
     @objc open weak var viewToDisplayIn: UIView?
     
-    /// Optional index  to display the `view`. By default is `997`
-    @objc open var viewIndex: Int = 997
+    /// Optional index  to display the `view`. By default is `9999`
+    @objc open var viewIndex: Int = 9999
     
     /// Optional insert below view. ↓ By default this is `nil`
     @objc open var insertBelowView: UIView?

@@ -10,7 +10,7 @@
 - Flexible, easy to use and customizable.
 - _Snacks_ are stackable and swipeable.
 - _Snacks_ are actionable.  
-- Supports iOS 11.0 +
+- Supports iOS 11.0 + and iOS 26.0 glass effect
 - Written with the latest Swift (Swift 5)
 
 <img src="https://raw.githubusercontent.com/carlosDigio/LPSnackbar/master/.github/Screen3.jpg" width="350"/>
@@ -55,8 +55,7 @@ Snacks can be customized
 ```swift
 let snackbar = LPSnackbarManager.createSnackBar(title: text, buttonTitle: "Undo", delegate: self)
 snackbar.viewToDisplayIn = view
-snackbar.bottomSpacing = (tabBarController?.tabBar.frame.height ?? 0) + 12
-snackbar.adjustsPositionForSafeArea = false
+snackbar.bottomSpacing = 12.0
 
 LPSnackbarManager.show(snackBar: snackbar)
 ```

@@ -1,5 +1,13 @@
 # LPSnackbar CHANGELOG
 
+## Version 4.2.0
+
+- Official release with glass effect enabled
+
+## Version 4.1.6
+
+- Added iOS 26 glass effect
+
 ## Version 4.1.5
 
 - Added snackbar allowDuplicates 
